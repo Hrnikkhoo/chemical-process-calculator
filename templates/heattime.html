@@ -1,0 +1,238 @@
+{% extends "base.html" %}
+{% block title %}محاسبه زمان گرم شدن مخزن تقطیر{% endblock %}
+{% block content %}
+<section class="calc-cont">
+    <div class="container py-4">
+        <!-- Title Section -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="d-flex align-items-center">
+                    <div class="bg-primary bg-opacity-10 p-3 rounded-circle me-3">
+                        <i class="fas fa-fire text-primary fs-3"></i>
+                    </div>
+                    <div>
+                        <h1 class="h3 mb-1">محاسبه زمان گرم شدن مخزن تقطیر</h1>
+                        <p class="text-secondary mb-0">تا دمای مورد نظر</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <!-- Calculator Form -->
+            <div class="col-12 col-lg-6">
+                <form method="POST" id="calc">
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-header bg-light py-3">
+                            <h5 class="card-title mb-0">
+                                <i class="fas fa-sliders-h me-2 text-primary"></i>
+                                پارامترهای محاسبه
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label class="form-label">
+                                    حجم، <span class="fw-bold">لیتر</span>
+                                    <i class="fa fa-info-circle ms-1 text-primary" data-bs-toggle="tooltip" title="حجم مایع در مخزن"></i>
+                                </label>
+                                <div class="input-group">
+                                    <input value="{{ form_data.v if form_data and form_data.v else '20' }}" name="v" id="v" type="text" class="form-control" inputmode="decimal">
+                                    <button type="button" class="btn btn-outline-secondary input-minus"><i class="fa fa-minus"></i></button>
+                                    <button type="button" class="btn btn-outline-secondary input-plus"><i class="fa fa-plus"></i></button>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">
+                                    توان، <span class="fw-bold">وات</span>
+                                    <i class="fa fa-info-circle ms-1 text-primary" data-bs-toggle="tooltip" title="توان المنت حرارتی"></i>
+                                </label>
+                                <div class="input-group">
+                                    <input value="{{ form_data.w if form_data and form_data.w else '2000' }}" name="w" id="w" type="text" class="form-control" inputmode="decimal">
+                                    <button type="button" class="btn btn-outline-secondary input-minus"><i class="fa fa-minus"></i></button>
+                                    <button type="button" class="btn btn-outline-secondary input-plus"><i class="fa fa-plus"></i></button>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">
+                                    دمای اولیه، <span class="fw-bold">°C</span>
+                                    <i class="fa fa-info-circle ms-1 text-primary" data-bs-toggle="tooltip" title="دمای اولیه مایع"></i>
+                                </label>
+                                <div class="input-group">
+                                    <input value="{{ form_data.t1 if form_data and form_data.t1 else '25' }}" name="t1" id="t1" type="text" class="form-control" inputmode="decimal">
+                                    <span class="input-group-text">°C</span>
+                                    <button type="button" class="btn btn-outline-secondary input-minus"><i class="fa fa-minus"></i></button>
+                                    <button type="button" class="btn btn-outline-secondary input-plus"><i class="fa fa-plus"></i></button>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">
+                                    دمای نهایی، <span class="fw-bold">°C</span>
+                                    <i class="fa fa-info-circle ms-1 text-primary" data-bs-toggle="tooltip" title="دمای نهایی مورد نظر"></i>
+                                </label>
+                                <div class="input-group">
+                                    <input value="{{ form_data.t2 if form_data and form_data.t2 else '85' }}" name="t2" id="t2" type="text" class="form-control" inputmode="decimal">
+                                    <span class="input-group-text">°C</span>
+                                    <button type="button" class="btn btn-outline-secondary input-minus"><i class="fa fa-minus"></i></button>
+                                    <button type="button" class="btn btn-outline-secondary input-plus"><i class="fa fa-plus"></i></button>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <div class="form-check form-switch">
+                                    <input type="checkbox" class="form-check-input" id="ef_trigger" name="ef_trigger" {% if form_data and form_data.ef_trigger %}checked{% endif %}>
+                                    <label class="form-check-label" for="ef_trigger">راندمان بخاری</label>
+                                </div>
+                                <div class="input-group mt-2">
+                                    <input value="{{ form_data.ef if form_data and form_data.ef else '100' }}" name="ef" id="ef" type="text" class="form-control" inputmode="decimal" {% if not form_data or not form_data.ef_trigger %}disabled{% endif %}>
+                                    <span class="input-group-text">%</span>
+                                    <button type="button" class="btn btn-outline-secondary input-minus" {% if not form_data or not form_data.ef_trigger %}disabled{% endif %}><i class="fa fa-minus"></i></button>
+                                    <button type="button" class="btn btn-outline-secondary input-plus" {% if not form_data or not form_data.ef_trigger %}disabled{% endif %}><i class="fa fa-plus"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-lg w-100">
+                        <i class="fas fa-calculator me-2"></i>
+                        محاسبه
+                    </button>
+                </form>
+            </div>
+
+            <!-- Results Section -->
+            <div class="col-12 col-lg-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-header bg-primary bg-opacity-10 py-3">
+                        <h5 class="card-title mb-0 text-primary">
+                            <i class="fas fa-chart-line me-2"></i>
+                            نتایج محاسبه
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        {% if result %}
+                            {% if result.error %}
+                                <div class="alert alert-danger">
+                                    <i class="fas fa-exclamation-circle me-2"></i>
+                                    {{ result.error }}
+                                </div>
+                            {% else %}
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <tbody>
+                                            <tr>
+                                                <td class="text-secondary">زمان گرم شدن</td>
+                                                <td class="font-monospace fw-bold">{{ "%.1f"|format(result.result.time_minutes) }} <span class="text-secondary">دقیقه</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            {% endif %}
+                        {% else %}
+                            <div class="text-center py-4">
+                                <div class="mb-3">
+                                    <i class="fas fa-fire display-4 text-primary opacity-50"></i>
+                                </div>
+                                <h6 class="fw-bold mb-2">نتایج اینجا نمایش داده می‌شوند</h6>
+                                <p class="text-secondary small mb-0">
+                                    برای محاسبه، مقادیر مورد نظر را وارد کنید.
+                                </p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const config = {
+        'v': { min: 0.1, max: 1000, step: 0.1, format: '0.1' },
+        'w': { min: 100, max: 100000, step: 100, format: '0' },
+        't1': { min: 0, max: 200, step: 1, format: '0' },
+        't2': { min: 0, max: 200, step: 1, format: '0' },
+        'ef': { min: 1, max: 100, step: 1, format: '0' }
+    };
+
+    function updateValue(input, increment) {
+        const settings = config[input.id];
+        if (!settings) return;
+
+        let value = parseFloat(input.value) || settings.min;
+        value = increment ? 
+            Math.min(settings.max, value + settings.step) : 
+            Math.max(settings.min, value - settings.step);
+
+        input.value = value.toFixed(settings.format === '0' ? 0 : 1);
+    }
+
+    // Handle increment/decrement buttons
+    document.querySelectorAll('.input-minus, .input-plus').forEach(button => {
+        let autoRepeatTimer = null;
+        let repeatDelay = 500;
+        let repeatInterval = 100;
+
+        button.addEventListener('mousedown', function(e) {
+            e.preventDefault();
+            const input = this.parentElement.querySelector('input');
+            const increment = this.classList.contains('input-plus');
+            
+            updateValue(input, increment);
+            
+            autoRepeatTimer = setTimeout(() => {
+                autoRepeatTimer = setInterval(() => {
+                    updateValue(input, increment);
+                }, repeatInterval);
+            }, repeatDelay);
+        });
+
+        ['mouseup', 'mouseleave'].forEach(event => {
+            button.addEventListener(event, function() {
+                if (autoRepeatTimer) {
+                    clearTimeout(autoRepeatTimer);
+                    clearInterval(autoRepeatTimer);
+                }
+            });
+        });
+    });
+
+    // Handle efficiency checkbox toggle
+    const efTrigger = document.getElementById('ef_trigger');
+    const efInput = document.getElementById('ef');
+    const efButtons = efInput.parentElement.querySelectorAll('button');
+    
+    // Initialize state
+    if (efTrigger && efInput) {
+        efInput.disabled = !efTrigger.checked;
+        efButtons.forEach(btn => btn.disabled = !efTrigger.checked);
+    }
+    
+    efTrigger.addEventListener('change', function() {
+        efInput.disabled = !this.checked;
+        efButtons.forEach(btn => btn.disabled = !this.checked);
+    });
+
+    // Initialize tooltips
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    });
+
+    // Handle manual input changes
+    document.querySelectorAll('input[type="text"]').forEach(input => {
+        input.addEventListener('change', function() {
+            const settings = config[this.id];
+            if (!settings) return;
+            
+            let value = parseFloat(this.value) || settings.min;
+            value = Math.max(settings.min, Math.min(settings.max, value));
+            this.value = value.toFixed(settings.format === '0' ? 0 : 1);
+        });
+    });
+});
+</script>
+{% endblock %}

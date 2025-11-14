@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+{% block title %}محاسبه نسبت رفلاکس (روش دوم){% endblock %}
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <!-- Page Header -->
+            <div class="page-header mb-4">
+                <h1 class="display-5 fw-bold">
+                    <i class="fas fa-flask text-primary me-2"></i>
+                    محاسبه نسبت رفلاکس (روش دوم)
+                </h1>
+                <p class="lead text-muted">
+                    این روش برای محصول با درصد الکل 96.6 درصد طراحی شده است.
+                    داده‌ها بدون اتلاف انرژی و در دمای 20 درجه سانتیگراد معتبر هستند.
+                </p>
+            </div>
+
+            <!-- Calculator Card -->
+            <div class="card shadow-sm border-0 mb-4 rounded-4">
+                <div class="card-header bg-primary text-white py-3 rounded-top-4">
+                    <h5 class="mb-0">
+                        <i class="fas fa-calculator me-2"></i>
+                        ورود اطلاعات
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <!-- Input Form -->
+                    <form method="POST" action="{{ url_for('refluxcalc1') }}">
+                        <!-- Power Input -->
+                        <div class="mb-4">
+                            <label for="power" class="form-label">
+                                <i class="fas fa-bolt text-primary me-1"></i>
+                                <b>توان المنت:</b>
+                            </label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" name="power" id="power" 
+                                       required min="1" value="{{ '1000' if not result.power else result.power }}">
+                                <span class="input-group-text">وات</span>
+                            </div>
+                        </div>
+
+                        <!-- Flow Rate -->
+                        <div class="mb-4">
+                            <label for="rate" class="form-label">
+                                <i class="fas fa-tint text-primary me-1"></i>
+                                <b>نرخ برداشت:</b>
+                            </label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" name="rate" id="rate" 
+                                       required min="0.1" step="0.1" value="{{ '1' if not result.rate else result.rate }}">
+                                <span class="input-group-text">لیتر در ساعت</span>
+                            </div>
+                            <small class="text-muted">اگر 300 سی‌سی در ساعت است، به صورت 0.3 لیتر در ساعت وارد کنید</small>
+                        </div>
+
+                        <!-- Heat Loss -->
+                        <div class="mb-4">
+                            <label for="heat_loss" class="form-label">
+                                <i class="fas fa-temperature-high text-primary me-1"></i>
+                                <b>درصد اتلاف حرارت:</b>
+                            </label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" name="heat_loss" id="heat_loss" 
+                                       required min="0" max="100" value="{{ '20' if not result.heat_loss else result.heat_loss }}">
+                                <span class="input-group-text">درصد</span>
+                            </div>
+                            <small class="text-muted">برای ستون عایق‌بندی شده 0 و برای ستون معمولی در دمای 20 درجه حداقل 20 درصد وارد کنید</small>
+                        </div>
+
+                        <!-- Calculate Button -->
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary btn-lg px-5 rounded-4">
+                                <i class="fas fa-calculator me-2"></i>
+                                محاسبه نسبت رفلاکس
+                            </button>
+                        </div>
+                    </form>
+
+                    {% if result.error %}
+                    <div class="alert alert-danger mt-4">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        {{ result.error }}
+                    </div>
+                    {% endif %}
+
+                    {% if result.reflux_ratio is not none %}
+                    <div class="mt-4 p-4 bg-light rounded-4">
+                        <h5 class="text-center mb-4">
+                            <i class="fas fa-chart-bar text-primary me-2"></i>
+                            نتایج محاسبه
+                        </h5>
+                        <div class="table-responsive">
+                            <table class="table table-borderless">
+                                <tbody>
+                                    <tr>
+                                        <td><i class="fas fa-percentage text-primary me-2"></i>درصد الکل:</td>
+                                        <td class="text-end">{{ result.alcohol_percent }} درصد</td>
+                                    </tr>
+                                    <tr>
+                                        <td><i class="fas fa-bolt text-primary me-2"></i>توان المنت:</td>
+                                        <td class="text-end">{{ result.power }} وات</td>
+                                    </tr>
+                                    <tr>
+                                        <td><i class="fas fa-tint text-primary me-2"></i>نرخ برداشت:</td>
+                                        <td class="text-end">{{ result.rate }} لیتر در ساعت</td>
+                                    </tr>
+                                    <tr>
+                                        <td><i class="fas fa-temperature-high text-primary me-2"></i>اتلاف حرارت:</td>
+                                        <td class="text-end">{{ result.heat_loss }} درصد</td>
+                                    </tr>
+                                    <tr class="table-primary rounded">
+                                        <td><i class="fas fa-calculator text-primary me-2"></i><strong>نسبت رفلاکس محاسبه شده:</strong></td>
+                                        <td class="text-end"><strong>{{ result.reflux_ratio }}</strong></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

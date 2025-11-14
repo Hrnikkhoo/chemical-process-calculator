@@ -1,0 +1,227 @@
+{% extends "base.html" %}
+{% block title %}محاسبه‌گر مایع باقی‌مانده در مخزن تقطیر{% endblock %}
+{% block content %}
+<section class="calc-cont">
+    <div class="container py-4">
+        <!-- Title Section -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="d-flex align-items-center">
+                    <div class="bg-primary bg-opacity-10 p-3 rounded-circle me-3">
+                        <i class="fas fa-flask text-primary fs-3"></i>
+                    </div>
+                    <div>
+                        <h1 class="h3 mb-1">محاسبه‌گر مایع باقی‌مانده در مخزن تقطیر</h1>
+                        <p class="text-secondary mb-0">پس از تقطیر توسط المنت حرارتی</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <!-- Calculator Form -->
+            <div class="col-12 col-lg-6">
+                <form method="POST" id="calc">
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-header bg-light py-3">
+                            <h5 class="card-title mb-0">
+                                <i class="fas fa-sliders-h me-2 text-primary"></i>
+                                پارامترهای محاسبه
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label class="form-label">
+                                    قطر مخزن، <span class="fw-bold">سانتی‌متر</span>
+                                    <i class="fa fa-info-circle ms-1 text-primary" data-bs-toggle="tooltip" title="قطر داخلی مخزن"></i>
+                                </label>
+                                <div class="input-group">
+                                    <input value="{{ form_data.d if form_data and form_data.d else '36' }}" name="d" id="d" type="text" class="form-control" inputmode="decimal">
+                                    <button type="button" class="btn btn-outline-secondary input-minus"><i class="fa fa-minus"></i></button>
+                                    <button type="button" class="btn btn-outline-secondary input-plus"><i class="fa fa-plus"></i></button>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">
+                                    ارتفاع از پایین تا سطح عنصر گرمایش پوشاننده، <span class="fw-bold">سانتی‌متر</span>
+                                    <i class="fa fa-info-circle ms-1 text-primary" data-bs-toggle="tooltip" title="ارتفاع از کف مخزن تا سطحی که المنت را می‌پوشاند"></i>
+                                </label>
+                                <div class="input-group">
+                                    <input value="{{ form_data.h if form_data and form_data.h else '8' }}" name="h" id="h" type="text" class="form-control" inputmode="decimal">
+                                    <button type="button" class="btn btn-outline-secondary input-minus"><i class="fa fa-minus"></i></button>
+                                    <button type="button" class="btn btn-outline-secondary input-plus"><i class="fa fa-plus"></i></button>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">
+                                    میزان الکل مایع، <span class="fw-bold">% (حجم)</span>
+                                    <i class="fa fa-info-circle ms-1 text-primary" data-bs-toggle="tooltip" title="درصد الکل در براگا یا الکل خام"></i>
+                                </label>
+                                <div class="input-group">
+                                    <input value="{{ form_data.s if form_data and form_data.s else '10' }}" name="s" id="s" type="text" class="form-control" inputmode="decimal">
+                                    <button type="button" class="btn btn-outline-secondary input-minus"><i class="fa fa-minus"></i></button>
+                                    <button type="button" class="btn btn-outline-secondary input-plus"><i class="fa fa-plus"></i></button>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <div class="form-check form-switch">
+                                    <input type="checkbox" class="form-check-input" id="t_trigger" name="t_trigger" {% if form_data and form_data.t_trigger %}checked{% endif %}>
+                                    <label class="form-check-label" for="t_trigger">دمای مایع</label>
+                                </div>
+                                <div class="input-group mt-2">
+                                    <input value="{{ form_data.t if form_data and form_data.t else '20' }}" name="t" id="t" type="text" class="form-control" inputmode="decimal" {% if not form_data or not form_data.t_trigger %}disabled{% endif %}>
+                                    <span class="input-group-text">°C</span>
+                                    <button type="button" class="btn btn-outline-secondary input-minus" {% if not form_data or not form_data.t_trigger %}disabled{% endif %}><i class="fa fa-minus"></i></button>
+                                    <button type="button" class="btn btn-outline-secondary input-plus" {% if not form_data or not form_data.t_trigger %}disabled{% endif %}><i class="fa fa-plus"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-lg w-100">
+                        <i class="fas fa-calculator me-2"></i>
+                        محاسبه
+                    </button>
+                </form>
+            </div>
+
+            <!-- Results Section -->
+            <div class="col-12 col-lg-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-header bg-primary bg-opacity-10 py-3">
+                        <h5 class="card-title mb-0 text-primary">
+                            <i class="fas fa-chart-line me-2"></i>
+                            نتایج محاسبه
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        {% if result %}
+                            {% if result.error %}
+                                <div class="alert alert-danger">
+                                    <i class="fas fa-exclamation-circle me-2"></i>
+                                    {{ result.error }}
+                                </div>
+                            {% else %}
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <tbody>
+                                            <tr>
+                                                <td class="text-secondary">حجم مایع باقی‌مانده در پایان تقطیر</td>
+                                                <td class="font-monospace fw-bold">{{ "%.3f"|format(result.result.remaining_volume) }} <span class="text-secondary">لیتر</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-secondary">حداقل حجم مایعی که می‌توان درون مخزن ریخت</td>
+                                                <td class="font-monospace fw-bold">{{ "%.3f"|format(result.result.min_volume) }} <span class="text-secondary">لیتر</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            {% endif %}
+                        {% else %}
+                            <div class="text-center py-4">
+                                <div class="mb-3">
+                                    <i class="fas fa-flask display-4 text-primary opacity-50"></i>
+                                </div>
+                                <h6 class="fw-bold mb-2">نتایج اینجا نمایش داده می‌شوند</h6>
+                                <p class="text-secondary small mb-0">
+                                    برای محاسبه، مقادیر مورد نظر را وارد کنید.
+                                </p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const config = {
+        'd': { min: 1, max: 200, step: 1, format: '0' },
+        'h': { min: 1, max: 100, step: 0.1, format: '0.1' },
+        's': { min: 0, max: 100, step: 0.1, format: '0.1' },
+        't': { min: 10, max: 30, step: 1, format: '0' }
+    };
+
+    function updateValue(input, increment) {
+        const settings = config[input.id];
+        if (!settings) return;
+
+        let value = parseFloat(input.value) || settings.min;
+        value = increment ? 
+            Math.min(settings.max, value + settings.step) : 
+            Math.max(settings.min, value - settings.step);
+
+        input.value = value.toFixed(settings.format === '0' ? 0 : 1);
+    }
+
+    // Handle increment/decrement buttons
+    document.querySelectorAll('.input-minus, .input-plus').forEach(button => {
+        let autoRepeatTimer = null;
+        let repeatDelay = 500;
+        let repeatInterval = 100;
+
+        button.addEventListener('mousedown', function(e) {
+            e.preventDefault();
+            const input = this.parentElement.querySelector('input');
+            const increment = this.classList.contains('input-plus');
+            
+            updateValue(input, increment);
+            
+            autoRepeatTimer = setTimeout(() => {
+                autoRepeatTimer = setInterval(() => {
+                    updateValue(input, increment);
+                }, repeatInterval);
+            }, repeatDelay);
+        });
+
+        ['mouseup', 'mouseleave'].forEach(event => {
+            button.addEventListener(event, function() {
+                if (autoRepeatTimer) {
+                    clearTimeout(autoRepeatTimer);
+                    clearInterval(autoRepeatTimer);
+                }
+            });
+        });
+    });
+
+    // Handle temperature checkbox toggle
+    const tTrigger = document.getElementById('t_trigger');
+    const tInput = document.getElementById('t');
+    const tButtons = tInput.parentElement.querySelectorAll('button');
+    
+    // Initialize state
+    if (tTrigger && tInput) {
+        tInput.disabled = !tTrigger.checked;
+        tButtons.forEach(btn => btn.disabled = !tTrigger.checked);
+    }
+    
+    tTrigger.addEventListener('change', function() {
+        tInput.disabled = !this.checked;
+        tButtons.forEach(btn => btn.disabled = !this.checked);
+    });
+
+    // Initialize tooltips
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    });
+
+    // Handle manual input changes
+    document.querySelectorAll('input[type="text"]').forEach(input => {
+        input.addEventListener('change', function() {
+            const settings = config[this.id];
+            if (!settings) return;
+            
+            let value = parseFloat(this.value) || settings.min;
+            value = Math.max(settings.min, Math.min(settings.max, value));
+            this.value = value.toFixed(settings.format === '0' ? 0 : 1);
+        });
+    });
+});
+</script>
+{% endblock %}

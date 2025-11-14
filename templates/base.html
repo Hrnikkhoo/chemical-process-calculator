@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="fa">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}ماشین حساب هوشمند{% endblock %}</title>
+    
+    <!-- Preload critical assets -->
+    <link rel="preload" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" as="style" crossorigin="anonymous">
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css" as="style" crossorigin="anonymous">
+    
+    <!-- Stylesheets -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css" rel="stylesheet" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" crossorigin="anonymous">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/main.css') }}" rel="stylesheet">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+
+    <style>
+      :root {
+        /* Theme Colors */
+        --primary-color: #1976d2;
+        --primary-dark: #1565c0;
+        --primary-light: #e3f2fd;
+        --primary-hover: #1565c0;
+        
+        --secondary-color: #ff9800;
+        --secondary-dark: #f57c00;
+        --secondary-light: #ffe0b2;
+        --secondary-hover: #f57c00;
+        
+        --success-color: #4caf50;
+        --success-dark: #2e7d32;
+        --success-light: #e8f5e9;
+        --success-hover: #2e7d32;
+        
+        --danger-color: #f44336;
+        --danger-dark: #d32f2f;
+        --danger-light: #ffebee;
+        --danger-hover: #d32f2f;
+        
+        --warning-color: #ff9800;
+        --warning-dark: #f57c00;
+        --warning-light: #fff3e0;
+        --warning-hover: #f57c00;
+        
+        --info-color: #03a9f4;
+        --info-dark: #0288d1;
+        --info-light: #e1f5fe;
+        --info-hover: #0288d1;
+
+        /* Layout */
+        --spacing-unit: 0.25rem;
+        --card-border-radius: 1rem;
+        --button-border-radius: 0.5rem;
+        --icon-size: 48px;
+        
+        /* Transitions */
+        --transition-fast: 0.2s ease;
+        --transition-normal: 0.3s ease;
+        
+        /* Light Theme */
+        --bg-primary: #ffffff;
+        --bg-secondary: #f8f9fa;
+        --bg-tertiary: #e9ecef;
+        --text-primary: #212121;
+        --text-secondary: #666666;
+        --border-color: #dee2e6;
+        --card-bg: #ffffff;
+        --input-bg: #ffffff;
+        --input-border: #ced4da;
+        --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+        --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+        --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+        --header-bg: var(--primary-color);
+        --navbar-text: #ffffff;
+      }
+
+      /* Dark Theme */
+      html[data-theme="dark"] {
+        --bg-primary: #121212;
+        --bg-secondary: #1e1e1e;
+        --bg-tertiary: #2d2d2d;
+        --text-primary: #e0e0e0;
+        --text-secondary: #b8b8b8;
+        --border-color: #333333;
+        --card-bg: #1e1e1e;
+        --input-bg: #2d2d2d;
+        --input-border: #404040;
+        --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.2);
+        --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.3);
+        --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.3);
+        --header-bg: #1a1a1a;
+        --navbar-text: #e0e0e0;
+      }
+
+      /* Dark Theme Text Colors */
+      html[data-theme="dark"] h1,
+      html[data-theme="dark"] h2,
+      html[data-theme="dark"] h3,
+      html[data-theme="dark"] h4,
+      html[data-theme="dark"] h5,
+      html[data-theme="dark"] h6,
+      html[data-theme="dark"] .display-1,
+      html[data-theme="dark"] .display-2,
+      html[data-theme="dark"] .display-3,
+      html[data-theme="dark"] .display-4,
+      html[data-theme="dark"] .display-5,
+      html[data-theme="dark"] .display-6 {
+        color: var(--text-primary) !important;
+      }
+
+      html[data-theme="dark"] p,
+      html[data-theme="dark"] .lead {
+        color: var(--text-primary);
+      }
+
+      html[data-theme="dark"] .card {
+        background-color: var(--card-bg);
+        color: var(--text-primary);
+        border-color: var(--border-color);
+      }
+
+      html[data-theme="dark"] .card-body {
+        color: var(--text-primary);
+      }
+
+      html[data-theme="dark"] .card-title {
+        color: var(--text-primary);
+      }
+
+      html[data-theme="dark"] .card-header {
+        background-color: var(--bg-tertiary) !important;
+        border-color: var(--border-color);
+        color: var(--text-primary);
+      }
+
+      html[data-theme="dark"] .card-header.bg-light {
+        background-color: var(--bg-tertiary) !important;
+        color: var(--text-primary) !important;
+      }
+
+      html[data-theme="dark"] .card-header .card-title {
+        color: var(--text-primary) !important;
+      }
+
+      html[data-theme="dark"] .bg-light {
+        background-color: var(--bg-tertiary) !important;
+        color: var(--text-primary) !important;
+      }
+
+      html[data-theme="dark"] .input-group-text {
+        background-color: var(--input-bg);
+        border-color: var(--input-border);
+        color: var(--text-primary);
+      }
+
+      html[data-theme="dark"] .card-tags,
+      html[data-theme="dark"] .text-muted {
+        color: var(--text-secondary) !important;
+      }
+
+      /* Preserve Bootstrap utility colors in dark mode but make them more visible */
+      html[data-theme="dark"] .text-primary {
+        color: #64b5f6 !important;
+      }
+
+      html[data-theme="dark"] .text-secondary {
+        color: var(--text-secondary) !important;
+      }
+
+      html[data-theme="dark"] td.text-secondary,
+      html[data-theme="dark"] th.text-secondary {
+        color: var(--text-secondary) !important;
+      }
+
+      html[data-theme="dark"] .text-success {
+        color: #81c784 !important;
+      }
+
+      html[data-theme="dark"] .text-danger {
+        color: #e57373 !important;
+      }
+
+      html[data-theme="dark"] .text-warning {
+        color: #ffb74d !important;
+      }
+
+      html[data-theme="dark"] .text-info {
+        color: #4dd0e1 !important;
+      }
+
+      /* Additional dark theme styles */
+      html[data-theme="dark"] .content {
+        background-color: var(--bg-primary);
+        color: var(--text-primary);
+      }
+
+      html[data-theme="dark"] .hero-section,
+      html[data-theme="dark"] .search-section {
+        color: var(--text-primary);
+      }
+
+      html[data-theme="dark"] .section-title {
+        color: var(--text-primary);
+      }
+
+      html[data-theme="dark"] .btn-outline-secondary {
+        border-color: var(--border-color);
+        color: var(--text-primary);
+      }
+
+      html[data-theme="dark"] .btn-outline-secondary:hover {
+        background-color: var(--bg-tertiary);
+        color: var(--text-primary);
+        border-color: var(--border-color);
+      }
+
+      /* Base Styles */
+      body {
+        font-family: Vazirmatn, sans-serif;
+        background-color: var(--bg-primary);
+        color: var(--text-primary);
+        transition: background-color var(--transition-normal), 
+                    color var(--transition-normal);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* Navbar */
+      .navbar {
+        background: var(--header-bg) !important;
+        padding: calc(var(--spacing-unit) * 2) calc(var(--spacing-unit) * 4);
+        box-shadow: var(--shadow-md);
+      }
+
+      .navbar-brand {
+        font-weight: bold;
+        font-size: 1.5rem;
+        color: var(--navbar-text);
+      }
+
+      .nav-link {
+        color: var(--navbar-text) !important;
+        padding: calc(var(--spacing-unit) * 2) calc(var(--spacing-unit) * 4);
+        transition: background-color var(--transition-fast);
+      }
+
+      .nav-link:hover {
+        background-color: var(--primary-dark);
+      }
+
+      /* Dropdown Menus */
+      .dropdown-menu {
+        background-color: var(--card-bg);
+        border-color: var(--border-color);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-md);
+        padding: calc(var(--spacing-unit) * 2) 0;
+      }
+
+      .dropdown-item {
+        color: var(--text-primary);
+        padding: calc(var(--spacing-unit) * 3) calc(var(--spacing-unit) * 6);
+        transition: all var(--transition-fast);
+      }
+
+      .dropdown-item:hover {
+        background-color: var(--bg-tertiary);
+        color: var(--text-primary);
+      }
+
+      /* Forms */
+      .form-control, .form-select {
+        background-color: var(--input-bg);
+        border-color: var(--input-border);
+        color: var(--text-primary);
+        transition: all var(--transition-fast);
+      }
+
+      .form-control:focus, .form-select:focus {
+        background-color: var(--input-bg);
+        border-color: var(--primary-color);
+        color: var(--text-primary);
+        box-shadow: 0 0 0 0.25rem rgba(25, 118, 210, 0.25);
+      }
+
+      /* Placeholder styles for dark theme */
+      html[data-theme="dark"] .form-control::placeholder {
+        color: var(--text-secondary) !important;
+        opacity: 0.7;
+      }
+
+      html[data-theme="dark"] .form-control::-webkit-input-placeholder {
+        color: var(--text-secondary) !important;
+        opacity: 0.7;
+      }
+
+      html[data-theme="dark"] .form-control::-moz-placeholder {
+        color: var(--text-secondary) !important;
+        opacity: 0.7;
+      }
+
+      html[data-theme="dark"] .form-control:-ms-input-placeholder {
+        color: var(--text-secondary) !important;
+        opacity: 0.7;
+      }
+
+      /* Theme Toggle */
+      .theme-toggle {
+        cursor: pointer;
+        padding: calc(var(--spacing-unit) * 2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all var(--transition-fast);
+      }
+
+      .theme-toggle:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+      }
+
+      /* Footer */
+      .footer {
+        background-color: var(--bg-secondary);
+        color: var(--text-secondary);
+        padding: calc(var(--spacing-unit) * 8) 0;
+        margin-top: auto;
+      }
+
+      .footer-links {
+        list-style: none;
+        padding: 0;
+      }
+
+      .footer-links li {
+        margin-bottom: calc(var(--spacing-unit) * 2);
+      }
+
+      .footer a {
+        color: var(--text-primary);
+        text-decoration: none;
+        transition: color var(--transition-fast);
+      }
+
+      .footer a:hover {
+        color: var(--primary-color);
+      }
+
+      /* Utility Classes */
+      .shadow-sm { box-shadow: var(--shadow-sm) !important; }
+      .shadow-md { box-shadow: var(--shadow-md) !important; }
+      .shadow-lg { box-shadow: var(--shadow-lg) !important; }
+
+      /* Loading Overlay */
+      .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        display: none; /* Hide by default */
+        justify-content: center;
+        align-items: center;
+        z-index: 1050; /* Above most Bootstrap components */
+      }
+
+      .loading-overlay .spinner-border {
+        width: 3rem;
+        height: 3rem;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Loading Overlay -->
+    <div class="loading-overlay">
+      <div class="spinner-border text-light spinner" role="status">
+        <span class="visually-hidden">در حال بارگذاری...</span>
+      </div>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+      <div class="container">
+        <a class="navbar-brand" href="{{ url_for('index') }}">
+          <i class="fas fa-flask me-2"></i>
+          ماشین حساب هوشمند
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+  <!-- Fermentation Calculations -->
+  <li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" href="#" id="fermentationDropdown" role="button" data-bs-toggle="dropdown">
+      <i class="fas fa-flask ms-1"></i>
+      محاسبات تخمیر
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="fermentationDropdown">
+      <li>
+        <a class="dropdown-item" href="{{ url_for('sugercalc') }}">
+          <i class="fas fa-calculator ms-2"></i>
+          محاسبه قند تخمیر
+        </a>
+      </li>
+      <li>
+        <a class="dropdown-item" href="{{ url_for('graincalc') }}">
+          <i class="fas fa-seedling ms-2"></i>
+          تخمیر غلات
+        </a>
+      </li>
+      <li>
+        <a class="dropdown-item" href="{{ url_for('fruitcalc') }}">
+          <i class="fas fa-apple-alt ms-2"></i>
+          تخمیر میوه
+        </a>
+      </li>
+      <li>
+        <a class="dropdown-item" href="{{ url_for('fermentcalc') }}">
+          <i class="fas fa-percentage ms-2"></i>
+          میزان الکل تخمیر
+        </a>
+      </li>
+    </ul>
+  </li>
+
+  <!-- Distillation Calculations -->
+  <li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" href="#" id="distillationDropdown" role="button" data-bs-toggle="dropdown">
+      <i class="fas fa-vial ms-1"></i>
+      محاسبات تقطیر
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="distillationDropdown">
+      <li>
+        <a class="dropdown-item" href="{{ url_for('refluxcalc') }}">
+          <i class="fas fa-calculator ms-2"></i>
+          نسبت رفلاکس (روش اول)
+        </a>
+      </li>      <li>
+        <a class="dropdown-item" href="{{ url_for('refluxcalc1') }}">
+          <i class="fas fa-calculator ms-2"></i>
+          نسبت رفلاکس (روش دوم)
+        </a>
+      </li>
+      <li>
+        <a class="dropdown-item" href="{{ url_for('elementpower') }}">
+          <i class="fas fa-bolt ms-2"></i>
+          توان المنت
+        </a>
+      </li>
+      <li>
+        <a class="dropdown-item" href="{{ url_for('spncalc') }}">
+          <i class="fas fa-cogs ms-2"></i>
+          پکینگ اسپیرال
+        </a>
+      </li>
+      <li>
+        <a class="dropdown-item" href="{{ url_for('azeotropecalc') }}">
+          <i class="fas fa-microscope ms-2"></i>
+          آزئوتروپ
+        </a>
+      </li>
+      <li>
+        <a class="dropdown-item" href="{{ url_for('spiritrun') }}">
+          <i class="fas fa-flask ms-2"></i>
+          اسپیریت ران
+        </a>
+      </li>
+      <li>
+        <a class="dropdown-item" href="{{ url_for('remainingliquid') }}">
+          <i class="fas fa-tint ms-2"></i>
+          مایع باقی‌مانده در مخزن تقطیر
+        </a>
+      </li>
+      <li>
+        <a class="dropdown-item" href="{{ url_for('boilingpoint') }}">
+          <i class="fas fa-thermometer-half ms-2"></i>
+          نقطه جوش بر اساس الکل و فشار
+        </a>
+      </li>
+      <li>
+        <a class="dropdown-item" href="{{ url_for('columnheat') }}">
+          <i class="fas fa-fire ms-2"></i>
+          اتلاف حرارت ستون تقطیر
+        </a>
+      </li>
+      <li>
+        <a class="dropdown-item" href="{{ url_for('heattime') }}">
+          <i class="fas fa-clock ms-2"></i>
+          زمان گرم شدن مخزن تقطیر
+        </a>
+      </li>
+    </ul>
+  </li>
+
+  <!-- Other Calculators -->
+  <li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" href="#" id="otherCalculatorsDropdown" role="button" data-bs-toggle="dropdown">
+      <i class="fas fa-calculator ms-1"></i>
+      سایر ماشین حساب‌ها
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="otherCalculatorsDropdown">
+      <li>
+        <a class="dropdown-item" href="{{ url_for('bloodalco') }}">
+          <i class="fas fa-wine-bottle ms-2"></i>
+          محاسبه غلظت الکل خون
+        </a>
+      </li>
+    </ul>
+  </li>
+
+</ul><div class="d-flex align-items-center">
+            <button class="btn btn-link nav-link theme-toggle px-2" id="themeToggle" aria-label="تغییر تم">
+              <i class="fas fa-moon"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="content">
+      <div class="container">
+        {% block content %}{% endblock %}
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-4 mb-4 mb-md-0">
+            <h5 class="mb-4">درباره ما</h5>
+            <p>
+              ماشین حساب هوشمند یک ابزار محاسباتی برای متخصصان صنعت تقطیر و تخمیر
+              است که محاسبات پیچیده را به شکلی ساده و کاربردی ارائه می‌دهد.
+            </p>
+          </div>
+          <div class="col-md-4 mb-4 mb-md-0">
+            <h5 class="mb-4">لینک‌های مفید</h5>            <ul class="footer-links">
+              <li><a href="{{ url_for('index') }}"><i class="fas fa-home me-2"></i>صفحه اصلی</a></li>
+              <li><a href="{{ url_for('about') }}"><i class="fas fa-info-circle me-2"></i>درباره ما</a></li>
+              <li><a href="#"><i class="fas fa-book me-2"></i>راهنمای استفاده</a></li>
+              <li><a href="#"><i class="fas fa-comments me-2"></i>تماس با ما</a></li>
+            </ul>
+          </div>
+          <div class="col-md-4">
+            <h5 class="mb-4">ارتباط با ما</h5>            <div class="social-icons mb-3">
+              <a href="#" title="کانال تلگرام ما"><i class="fab fa-telegram"></i></a>
+              <a href="#" title="صفحه اینستاگرام ما"><i class="fab fa-instagram"></i></a>
+              <a href="#" title="پشتیبانی در واتساپ"><i class="fab fa-whatsapp"></i></a>
+              <a href="#" title="ارسال ایمیل"><i class="fas fa-paper-plane"></i></a>
+            </div>
+            <p>
+              <i class="fas fa-paper-plane me-2"></i> info@example.com
+              <br />
+              <i class="fas fa-headset me-2"></i> +98 123 456 7890
+            </p>
+          </div>
+        </div>
+        <hr class="mt-4 mb-4" style="border-color: rgba(255, 255, 255, 0.1)" />
+        <div class="row">
+          <div class="col-md-12 text-center">
+            <p class="mb-0">
+              &copy; ۱۴۰۴ ماشین حساب هوشمند. تمامی حقوق محفوظ است.
+            </p>
+          </div>
+        </div>
+      </div>
+    </footer>    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" defer></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
+    {% block scripts %}{% endblock %}
+  </body>
+</html>

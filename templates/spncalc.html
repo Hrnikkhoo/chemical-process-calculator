@@ -1,0 +1,412 @@
+{% extends "base.html" %}
+{% block title %}محاسبه پکینگ اسپیرال{% endblock %}
+{% block content %}
+
+<div class="container py-4">
+  <div class="row">
+    <div class="col-lg-8 mx-auto">
+      <!-- Page Header -->
+      <div class="page-header mb-4">
+        <h1 class="display-5 fw-bold">
+          <i class="fas fa-cogs text-primary me-2"></i>
+          محاسبه پکینگ اسپیرال
+        </h1>
+        <p class="lead text-muted">
+          با استفاده از این ابزار می‌توانید حجم، وزن و تعداد صفحات نظری پکینگ اسپیرال مورد نیاز برای ستون تقطیر خود را محاسبه کنید.
+        </p>
+      </div>
+
+      <!-- Calculator Card -->
+      <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-primary text-white py-3">
+          <h5 class="mb-0">
+            <i class="fas fa-calculator me-2"></i>
+            فرم محاسبه
+          </h5>
+        </div>
+        <div class="card-body p-4">
+          <!-- Calculator Form -->
+          <form method="POST" action="{{ url_for('spncalc') }}" id="calculatorForm" class="needs-validation" novalidate>
+            <!-- Column Height Input -->
+            <div class="mb-4">
+              <label for="h_column" class="form-label">
+                <i class="fas fa-arrows-alt-v text-primary me-1"></i>
+                <b>ارتفاع ستون (میلی‌متر):</b>
+                <i class="fas fa-info-circle text-muted ms-1" data-bs-toggle="tooltip" title="ارتفاع ستون تقطیر شما به میلی‌متر. این مقدار باید بین 0 تا 10000 میلی‌متر باشد."></i>
+              </label>
+              <div class="input-group">
+                <input
+                  type="number"
+                  class="form-control"
+                  id="h_column"
+                  name="h_column"
+                  placeholder="مثال: 1000"
+                  min="1"
+                  max="10000"
+                  required
+                  value="{{ request.form.h_column if request.form.h_column else '' }}"
+                />
+                <span class="input-group-text">میلی‌متر</span>
+                <div class="invalid-feedback">
+                  لطفاً ارتفاع ستون را بین 1 تا 10000 میلی‌متر وارد کنید.
+                </div>
+              </div>
+              <div class="form-text">ارتفاع ستون تقطیر شما به میلی‌متر (بین 1 تا 10000)</div>
+            </div>
+
+            <!-- Column Diameter Select -->
+            <div class="mb-4">
+              <label for="d_column" class="form-label">
+                <i class="fas fa-circle text-primary me-1"></i>
+                <b>قطر ستون:</b>
+                <i class="fas fa-info-circle text-muted ms-1" data-bs-toggle="tooltip" title="قطر داخلی ستون تقطیر شما. این مقدار بر اساس سایز استاندارد لوله‌ها تعیین می‌شود."></i>
+              </label>
+              <select class="form-select" id="d_column" name="d_column" required>
+                <option value="" selected disabled>-- لطفاً یک گزینه انتخاب کنید --</option>
+                <option value="35" {% if request.form.d_column == '35' %}selected{% endif %}>سایز 1.5 اینچ با قطر داخلی 35 میلی متر</option>
+                <option value="48" {% if request.form.d_column == '48' %}selected{% endif %}>سایز 2 اینچ با قطر داخلی 48 میلی متر</option>
+                <option value="59" {% if request.form.d_column == '59' %}selected{% endif %}>سایز 2.5 اینچ با قطر داخلی 59 میلی متر</option>
+                <option value="72" {% if request.form.d_column == '72' %}selected{% endif %}>سایز 3 اینچ با قطر داخلی 72 میلی متر</option>
+              </select>
+              <div class="invalid-feedback">
+                لطفاً قطر ستون را انتخاب کنید.
+              </div>
+              <div class="form-text">قطر داخلی ستون تقطیر بر اساس سایز استاندارد لوله‌ها</div>
+            </div>
+
+            <!-- Mesh Type Select -->
+            <div class="mb-4">
+              <label for="mesh_type" class="form-label">
+                <i class="fas fa-th text-primary me-1"></i>
+                <b>سایز اسپیرال مورد نظر:</b>
+                <i class="fas fa-info-circle text-muted ms-1" data-bs-toggle="tooltip" title="نوع و سایز توری اسپیرال مورد استفاده. هر نوع توری دارای ضریب و چگالی متفاوتی است."></i>
+              </label>
+              <select class="form-select" id="mesh_type" name="mesh_type" required>
+                <option value="" selected disabled>-- لطفاً یک گزینه انتخاب کنید --</option>
+                <optgroup label="توری استیل">
+                  <option value="1.5_2" {% if request.form.mesh_type == '1.5_2' %}selected{% endif %}>استیل 2 * 2 با ضخامت سیم 0.2 میلی‌متر</option>
+                  <option value="0.9_3" {% if request.form.mesh_type == '0.9_3' %}selected{% endif %}>استیل هفت ضلعی 3 * 3 با ضخامت سیم 0.2 میلی‌متر</option>
+                  <option value="1_3" {% if request.form.mesh_type == '1_3' %}selected{% endif %}>استیل 3 * 3 با ضخامت سیم 0.2 میلی‌متر</option>
+                  <option value="1.5_3" {% if request.form.mesh_type == '1.5_3' %}selected{% endif %}>استیل 3 * 3 با ضخامت سیم 0.3 میلی‌متر</option>
+                  <option value="1_3.5" {% if request.form.mesh_type == '1_3.5' %}selected{% endif %}>استیل 3.5 * 3.5 با ضخامت سیم 0.25 میلی‌متر</option>
+                  <option value="1.1_4" {% if request.form.mesh_type == '1.1_4' %}selected{% endif %}>استیل 4 * 4 با ضخامت سیم 0.3 میلی‌متر</option>
+                  <option value="1_5" {% if request.form.mesh_type == '1_5' %}selected{% endif %}>استیل 5 * 5 با ضخامت سیم 0.3 میلی‌متر</option>
+                </optgroup>
+                <optgroup label="توری مس">
+                  <option value="1.5_3" {% if request.form.mesh_type == '1.5_3' %}selected{% endif %}>مس 3 * 3 با ضخامت سیم 0.25 میلی‌متر</option>
+                  <option value="1.3_4" {% if request.form.mesh_type == '1.3_4' %}selected{% endif %}>مس 4 * 4 با ضخامت سیم 0.3 میلی‌متر</option>
+                  <option value="1.2_5" {% if request.form.mesh_type == '1.2_5' %}selected{% endif %}>مس 5 * 5 با ضخامت سیم 0.35 میلی‌متر</option>
+                </optgroup>
+              </select>
+              <div class="invalid-feedback">
+                لطفاً نوع و سایز توری اسپیرال را انتخاب کنید.
+              </div>
+              <div class="form-text">نوع و سایز توری اسپیرال بر اساس جنس و ابعاد شبکه</div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="d-grid gap-2">
+              <button type="submit" class="btn btn-primary btn-lg">
+                <i class="fas fa-calculator me-2"></i>
+                محاسبه پکینگ اسپیرال
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Results Section -->
+      {% if result_message %}
+      <div class="alert alert-{{ 'success' if result_type == 'success' else 'danger' }} alert-dismissible fade show" role="alert">
+        <i class="fas fa-{{ 'check-circle' if result_type == 'success' else 'exclamation-circle' }} me-2"></i>
+        {{ result_message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+      {% endif %}
+
+      {% if v is not none %}
+      <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-success text-white py-3">
+          <h5 class="mb-0">
+            <i class="fas fa-chart-bar me-2"></i>
+            نتایج محاسبه
+          </h5>
+        </div>
+        <div class="card-body p-4">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="results-list">
+                <div class="result-item">
+                  <div class="result-icon">
+                    <i class="fas fa-flask"></i>
+                  </div>
+                  <div class="result-content">
+                    <h6 class="result-title">حجم اسپیرال تقریبی:</h6>
+                    <p class="result-value">{{ v }} <span class="result-unit">لیتر</span></p>
+                  </div>
+                </div>
+                
+                <div class="result-item">
+                  <div class="result-icon">
+                    <i class="fas fa-weight-hanging"></i>
+                  </div>
+                  <div class="result-content">
+                    <h6 class="result-title">وزن اسپیرال تقریبی:</h6>
+                    <p class="result-value">{{ w }} <span class="result-unit">کیلوگرم</span></p>
+                  </div>
+                </div>
+                
+                <div class="result-item">
+                  <div class="result-icon">
+                    <i class="fas fa-layer-group"></i>
+                  </div>
+                  <div class="result-content">
+                    <h6 class="result-title">تعداد صفحات نظری:</h6>
+                    <p class="result-value">{{ plate }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="col-md-6">
+              <div class="chart-container">
+                <canvas id="resultsChart"></canvas>
+              </div>
+            </div>
+          </div>
+          
+          <div class="mt-4">
+            <div class="alert alert-info">
+              <i class="fas fa-info-circle me-2"></i>
+              <strong>نکته:</strong> این محاسبات تقریبی هستند و ممکن است با مقادیر واقعی تفاوت داشته باشند. برای نتایج دقیق‌تر، با متخصصان صنعت تقطیر مشورت کنید.
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+
+      <!-- Help Section -->
+      <div class="accordion" id="helpAccordion">
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="headingOne">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+              <i class="fas fa-question-circle me-2 text-primary"></i>
+              راهنمای استفاده از ماشین حساب پکینگ اسپیرال
+            </button>
+          </h2>
+          <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#helpAccordion">
+            <div class="accordion-body">
+              <p>برای محاسبه پکینگ اسپیرال مورد نیاز برای ستون تقطیر خود، مراحل زیر را دنبال کنید:</p>
+              <ol>
+                <li>ارتفاع ستون تقطیر خود را به میلی‌متر وارد کنید.</li>
+                <li>قطر داخلی ستون تقطیر را از لیست انتخاب کنید.</li>
+                <li>نوع و سایز توری اسپیرال مورد نظر خود را انتخاب کنید.</li>
+                <li>دکمه "محاسبه پکینگ اسپیرال" را کلیک کنید.</li>
+              </ol>
+              <p>پس از محاسبه، نتایج زیر نمایش داده می‌شوند:</p>
+              <ul>
+                <li><strong>حجم اسپیرال تقریبی:</strong> حجم کل توری اسپیرال مورد نیاز بر حسب لیتر</li>
+                <li><strong>وزن اسپیرال تقریبی:</strong> وزن کل توری اسپیرال مورد نیاز بر حسب کیلوگرم</li>
+                <li><strong>تعداد صفحات نظری:</strong> تعداد صفحات تئوری که این پکینگ می‌تواند ایجاد کند</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* Results Styling */
+  .results-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  .result-item {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    background-color: rgba(25, 118, 210, 0.05);
+    border-radius: 0.75rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .result-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  }
+  
+  .result-icon {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--primary-color);
+    color: white;
+    border-radius: 50%;
+    margin-left: 1rem;
+    font-size: 1.25rem;
+  }
+  
+  .result-content {
+    flex: 1;
+  }
+  
+  .result-title {
+    margin-bottom: 0.25rem;
+    color: var(--gray-color);
+    font-size: 0.9rem;
+  }
+  
+  .result-value {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--primary-color);
+  }
+  
+  .result-unit {
+    font-size: 0.9rem;
+    color: var(--gray-color);
+    font-weight: normal;
+  }
+  
+  .chart-container {
+    height: 100%;
+    min-height: 250px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* Dark Mode Compatibility */
+  .dark-mode .result-item {
+    background-color: rgba(255, 255, 255, 0.05);
+  }
+  
+  .dark-mode .result-title {
+    color: #aaa;
+  }
+  
+  .dark-mode .result-value {
+    color: #64b5f6;
+  }
+  
+  .dark-mode .result-unit {
+    color: #aaa;
+  }
+  
+  .dark-mode .form-text {
+    color: #aaa;
+  }
+  
+  .dark-mode .accordion-button {
+    background-color: #1e1e1e;
+    color: #e0e0e0;
+  }
+  
+  .dark-mode .accordion-button:not(.collapsed) {
+    background-color: #0d47a1;
+    color: white;
+  }
+  
+  .dark-mode .accordion-body {
+    background-color: #1e1e1e;
+    color: #e0e0e0;
+  }
+</style>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Enable Bootstrap tooltips
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+      return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+    
+    // Form validation
+    var form = document.getElementById('calculatorForm');
+    if (form) {
+      form.addEventListener('submit', function(event) {
+        if (!form.checkValidity()) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+        form.classList.add('was-validated');
+      });
+    }
+    
+    // Results chart
+    {% if v is not none %}
+    var ctx = document.getElementById('resultsChart').getContext('2d');
+    var resultsChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['حجم (لیتر)', 'وزن (کیلوگرم)', 'تعداد صفحات'],
+        datasets: [{
+          label: 'نتایج محاسبه',
+          data: [{{ v }}, {{ w }}, {{ plate }}],
+          backgroundColor: [
+            'rgba(25, 118, 210, 0.7)',
+            'rgba(76, 175, 80, 0.7)',
+            'rgba(255, 152, 0, 0.7)'
+          ],
+          borderColor: [
+            'rgba(25, 118, 210, 1)',
+            'rgba(76, 175, 80, 1)',
+            'rgba(255, 152, 0, 1)'
+          ],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        },
+        plugins: {
+          legend: {
+            display: false
+          }
+        }
+      }
+    });
+    
+    // Update chart colors for dark mode
+    const darkModeToggle = document.getElementById('darkModeToggle');
+    if (darkModeToggle) {
+      darkModeToggle.addEventListener('click', function() {
+        setTimeout(function() {
+          const isDarkMode = document.body.classList.contains('dark-mode');
+          
+          if (isDarkMode) {
+            resultsChart.options.scales.y.grid.color = 'rgba(255, 255, 255, 0.1)';
+            resultsChart.options.scales.x.grid.color = 'rgba(255, 255, 255, 0.1)';
+            resultsChart.options.scales.y.ticks.color = '#e0e0e0';
+            resultsChart.options.scales.x.ticks.color = '#e0e0e0';
+          } else {
+            resultsChart.options.scales.y.grid.color = 'rgba(0, 0, 0, 0.1)';
+            resultsChart.options.scales.x.grid.color = 'rgba(0, 0, 0, 0.1)';
+            resultsChart.options.scales.y.ticks.color = '#666';
+            resultsChart.options.scales.x.ticks.color = '#666';
+          }
+          
+          resultsChart.update();
+        }, 100);
+      });
+    }
+    {% endif %}
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,410 @@
+{% extends "base.html" %}
+{% block title %}محاسبه‌گر اسپیریت ران{% endblock %}
+{% block content %}
+<section class="calc-cont">
+    <div class="container py-4">
+        <!-- Title Section -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="d-flex align-items-center">
+                    <div class="bg-primary bg-opacity-10 p-3 rounded-circle me-3">
+                        <i class="fas fa-flask text-primary fs-3"></i>
+                    </div>
+                    <div>
+                        <h1 class="h3 mb-1">محاسبه اسپیریت ران</h1>
+                        <p class="text-secondary mb-0">محاسبه‌گر تقطیر دوم الکل خام</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <!-- Calculator Form -->
+            <div class="col-12 col-lg-6">
+                <form method="POST" id="calc">
+                    <!-- Basic Parameters -->
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-header bg-light py-3">
+                            <h5 class="card-title mb-0">
+                                <i class="fas fa-sliders-h me-2 text-primary"></i>
+                                پارامترهای اصلی
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label class="form-label">
+                                    حجم الکل خام، <span class="fw-bold">لیتر</span>
+                                    <i class="fa fa-info-circle ms-1 text-primary" data-bs-toggle="tooltip" title="حجم الکل خام برای تقطیر"></i>
+                                </label>
+                                <div class="input-group">
+                                    <input value="{{ form_data.vss if form_data and form_data.vss else '20' }}" name="vss" id="vss" type="text" class="form-control" inputmode="decimal">
+                                    <button type="button" class="btn btn-outline-secondary input-minus"><i class="fa fa-minus"></i></button>
+                                    <button type="button" class="btn btn-outline-secondary input-plus"><i class="fa fa-plus"></i></button>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">
+                                    میزان الکل خام، <span class="fw-bold">%</span>
+                                    <i class="fa fa-info-circle ms-1 text-primary" data-bs-toggle="tooltip" title="درصد الکل در مایع خام"></i>
+                                </label>
+                                <div class="input-group">
+                                    <input value="{{ form_data.sss if form_data and form_data.sss else '21' }}" name="sss" id="sss" type="text" class="form-control" inputmode="decimal">
+                                    <button type="button" class="btn btn-outline-secondary input-minus"><i class="fa fa-minus"></i></button>
+                                    <button type="button" class="btn btn-outline-secondary input-plus"><i class="fa fa-plus"></i></button>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">
+                                    میزان الکل خروجی، <span class="fw-bold">%</span>
+                                    <i class="fa fa-info-circle ms-1 text-primary" data-bs-toggle="tooltip" title="درصد الکل مورد نظر در خروجی"></i>
+                                </label>
+                                <div class="input-group">
+                                    <input value="{{ form_data.se if form_data and form_data.se else '65' }}" name="se" id="se" type="text" class="form-control" inputmode="decimal">
+                                    <button type="button" class="btn btn-outline-secondary input-minus"><i class="fa fa-minus"></i></button>
+                                    <button type="button" class="btn btn-outline-secondary input-plus"><i class="fa fa-plus"></i></button>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">
+                                    سهم سرها، <span class="fw-bold">%</span>
+                                    <i class="fa fa-info-circle ms-1 text-primary" data-bs-toggle="tooltip" title="درصد سرها از کل الکل"></i>
+                                </label>
+                                <div class="input-group">
+                                    <input value="{{ form_data.dg if form_data and form_data.dg else '8' }}" name="dg" id="dg" type="text" class="form-control" inputmode="decimal">
+                                    <button type="button" class="btn btn-outline-secondary input-minus"><i class="fa fa-minus"></i></button>
+                                    <button type="button" class="btn btn-outline-secondary input-plus"><i class="fa fa-plus"></i></button>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">
+                                    سهم تِیل <span class="fw-bold">%</span>
+                                    <i class="fa fa-info-circle ms-1 text-primary" data-bs-toggle="tooltip" title="درصد باطله‌ها از کل الکل"></i>
+                                </label>
+                                <div class="input-group">
+                                    <input value="{{ form_data.dh if form_data and form_data.dh else '5' }}" name="dh" id="dh" type="text" class="form-control" inputmode="decimal">
+                                    <button type="button" class="btn btn-outline-secondary input-minus"><i class="fa fa-minus"></i></button>
+                                    <button type="button" class="btn btn-outline-secondary input-plus"><i class="fa fa-plus"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Optional Parameters -->
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-header bg-light py-3">
+                            <h5 class="card-title mb-0">
+                                <i class="fas fa-cog me-2 text-primary"></i>
+                                پارامترهای اختیاری
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <div class="form-check form-switch">
+                                    <input type="checkbox" class="form-check-input" id="dpg_trigger" name="dpg_trigger" {% if form_data and form_data.dpg_trigger %}checked{% endif %}>
+                                    <label class="form-check-label" for="dpg_trigger">سهم تاج تخت‌ها</label>
+                                </div>
+                                <div class="input-group mt-2">
+                                    <input value="{{ form_data.dpg if form_data and form_data.dpg else '0' }}" name="dpg" id="dpg" type="text" class="form-control" inputmode="decimal" {% if not form_data or not form_data.dpg_trigger %}disabled{% endif %}>
+                                    <button type="button" class="btn btn-outline-secondary input-minus" {% if not form_data or not form_data.dpg_trigger %}disabled{% endif %}><i class="fa fa-minus"></i></button>
+                                    <button type="button" class="btn btn-outline-secondary input-plus" {% if not form_data or not form_data.dpg_trigger %}disabled{% endif %}><i class="fa fa-plus"></i></button>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <div class="form-check form-switch">
+                                    <input type="checkbox" class="form-check-input" id="dph_trigger" name="dph_trigger" {% if form_data and form_data.dph_trigger %}checked{% endif %}>
+                                    <label class="form-check-label" for="dph_trigger">نسبت پیش‌دم‌ها</label>
+                                </div>
+                                <div class="input-group mt-2">
+                                    <input value="{{ form_data.dph if form_data and form_data.dph else '0' }}" name="dph" id="dph" type="text" class="form-control" inputmode="decimal" {% if not form_data or not form_data.dph_trigger %}disabled{% endif %}>
+                                    <button type="button" class="btn btn-outline-secondary input-minus" {% if not form_data or not form_data.dph_trigger %}disabled{% endif %}><i class="fa fa-minus"></i></button>
+                                    <button type="button" class="btn btn-outline-secondary input-plus" {% if not form_data or not form_data.dph_trigger %}disabled{% endif %}><i class="fa fa-plus"></i></button>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <div class="form-check form-switch">
+                                    <input type="checkbox" class="form-check-input" id="ts_trigger" name="ts_trigger" {% if form_data and form_data.ts_trigger %}checked{% endif %}>
+                                    <label class="form-check-label" for="ts_trigger">دمای الکل خام</label>
+                                </div>
+                                <div class="input-group mt-2">
+                                    <input value="{{ form_data.ts if form_data and form_data.ts else '20' }}" name="ts" id="ts" type="text" class="form-control" inputmode="decimal" {% if not form_data or not form_data.ts_trigger %}disabled{% endif %}>
+                                    <button type="button" class="btn btn-outline-secondary input-minus" {% if not form_data or not form_data.ts_trigger %}disabled{% endif %}><i class="fa fa-minus"></i></button>
+                                    <button type="button" class="btn btn-outline-secondary input-plus" {% if not form_data or not form_data.ts_trigger %}disabled{% endif %}><i class="fa fa-plus"></i></button>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <div class="form-check form-switch">
+                                    <input type="checkbox" class="form-check-input" id="tv_trigger" name="tv_trigger" {% if form_data and form_data.tv_trigger %}checked{% endif %}>
+                                    <label class="form-check-label" for="tv_trigger">دمای خروجی الکل</label>
+                                </div>
+                                <div class="input-group mt-2">
+                                    <input value="{{ form_data.tv if form_data and form_data.tv else '20' }}" name="tv" id="tv" type="text" class="form-control" inputmode="decimal" {% if not form_data or not form_data.tv_trigger %}disabled{% endif %}>
+                                    <button type="button" class="btn btn-outline-secondary input-minus" {% if not form_data or not form_data.tv_trigger %}disabled{% endif %}><i class="fa fa-minus"></i></button>
+                                    <button type="button" class="btn btn-outline-secondary input-plus" {% if not form_data or not form_data.tv_trigger %}disabled{% endif %}><i class="fa fa-plus"></i></button>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <div class="form-check form-switch">
+                                    <input type="checkbox" class="form-check-input" id="vo_trigger" name="vo_trigger" {% if form_data and form_data.vo_trigger %}checked{% endif %}>
+                                    <label class="form-check-label" for="vo_trigger">نرخ نمونه‌برداری</label>
+                                </div>
+                                <div class="input-group mt-2">
+                                    <select class="form-select" id="column_diameter" name="column_diameter" {% if not form_data or not form_data.vo_trigger %}disabled{% endif %}>
+                                        <option value="48" {% if form_data and form_data.column_diameter == '48' %}selected{% endif %}>ستون 48 میلیمتر (1.1 لیتر/ساعت)</option>
+                                        <option value="73" {% if form_data and form_data.column_diameter == '73' %}selected{% endif %}>ستون 73 میلیمتر (2.5 لیتر/ساعت)</option>
+                                    </select>
+                                    <input value="{{ form_data.vo if form_data and form_data.vo else '1.1' }}" name="vo" id="vo" type="text" class="form-control" inputmode="decimal" {% if not form_data or not form_data.vo_trigger %}disabled{% endif %}>
+                                    <button type="button" class="btn btn-outline-secondary input-minus" {% if not form_data or not form_data.vo_trigger %}disabled{% endif %}><i class="fa fa-minus"></i></button>
+                                    <button type="button" class="btn btn-outline-secondary input-plus" {% if not form_data or not form_data.vo_trigger %}disabled{% endif %}><i class="fa fa-plus"></i></button>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <div class="form-check form-switch">
+                                    <input type="checkbox" class="form-check-input" id="p_trigger" name="p_trigger" {% if form_data and form_data.p_trigger %}checked{% endif %}>
+                                    <label class="form-check-label" for="p_trigger">فشار در مخزن</label>
+                                </div>
+                                <div class="input-group mt-2">
+                                    <input value="{{ form_data.p if form_data and form_data.p else '760' }}" name="p" id="p" type="text" class="form-control" inputmode="decimal" {% if not form_data or not form_data.p_trigger %}disabled{% endif %}>
+                                    <button type="button" class="btn btn-outline-secondary input-minus" {% if not form_data or not form_data.p_trigger %}disabled{% endif %}><i class="fa fa-minus"></i></button>
+                                    <button type="button" class="btn btn-outline-secondary input-plus" {% if not form_data or not form_data.p_trigger %}disabled{% endif %}><i class="fa fa-plus"></i></button>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <div class="form-check form-switch">
+                                    <input type="checkbox" class="form-check-input" id="ef_trigger" name="ef_trigger" {% if form_data and form_data.ef_trigger %}checked{% endif %}>
+                                    <label class="form-check-label" for="ef_trigger">راندمان تقطیر</label>
+                                </div>
+                                <div class="input-group mt-2">
+                                    <input value="{{ form_data.ef if form_data and form_data.ef else '100' }}" name="ef" id="ef" type="text" class="form-control" inputmode="decimal" {% if not form_data or not form_data.ef_trigger %}disabled{% endif %}>
+                                    <button type="button" class="btn btn-outline-secondary input-minus" {% if not form_data or not form_data.ef_trigger %}disabled{% endif %}><i class="fa fa-minus"></i></button>
+                                    <button type="button" class="btn btn-outline-secondary input-plus" {% if not form_data or not form_data.ef_trigger %}disabled{% endif %}><i class="fa fa-plus"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-lg w-100">
+                        <i class="fas fa-calculator me-2"></i>
+                        محاسبه
+                    </button>
+                </form>
+            </div>
+
+            <!-- Results Section -->
+            <div class="col-12 col-lg-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-header bg-primary bg-opacity-10 py-3">
+                        <h5 class="card-title mb-0 text-primary">
+                            <i class="fas fa-chart-line me-2"></i>
+                            نتایج محاسبه
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        {% if result %}
+                            {% if result.error %}
+                                <div class="alert alert-danger">
+                                    <i class="fas fa-exclamation-circle me-2"></i>
+                                    {{ result.error }}
+                                </div>
+                            {% else %}
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <tbody>
+                                            <tr>
+                                                <td class="text-secondary">حجم قلب تقطیر</td>
+                                                <td class="font-monospace fw-bold">{{ "%.0f"|format(result.result.body_volume) }} <span class="text-secondary">لیتر</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-secondary">حجم سرها (هد)</td>
+                                                <td class="font-monospace fw-bold">{{ "%.3f"|format(result.result.heads_volume) }} <span class="text-secondary">لیتر</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-secondary">حجم دم (تیل)</td>
+                                                <td class="font-monospace fw-bold">{{ "%.3f"|format(result.result.tails_volume) }} <span class="text-secondary">لیتر</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-secondary">حجم پشت سری</td>
+                                                <td class="font-monospace fw-bold">{{ "%.3f"|format(result.result.pre_heads_volume) }} <span class="text-secondary">لیتر</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-secondary">حجم جزئیات</td>
+                                                <td class="font-monospace fw-bold">{{ "%.3f"|format(result.result.pre_tails_volume) }} <span class="text-secondary">لیتر</span></td>
+                                            </tr>
+                                            {% if result.result.pick_body_time %}
+                                            <tr>
+                                                <td class="text-secondary">وقت انتخاب هارت (قلب تقطیر)</td>
+                                                <td class="font-monospace fw-bold">{{ result.result.pick_body_time }}</td>
+                                            </tr>
+                                            {% endif %}
+                                            <tr>
+                                                <td class="text-secondary">حجم الکل مطلق</td>
+                                                <td class="font-monospace fw-bold">{{ "%.0f"|format(result.result.absolute_alcohol) }} <span class="text-secondary">لیتر</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-secondary">مایع باقی‌مانده در مخزن</td>
+                                                <td class="font-monospace fw-bold">{{ "%.0f"|format(result.result.cube_liquid_rest) }} <span class="text-secondary">لیتر</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-secondary">نقطه جوش</td>
+                                                <td class="font-monospace fw-bold">{{ "%.2f"|format(result.result.boiling_point) }} <span class="text-secondary">درجه سانتی‌گراد</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            {% endif %}
+                        {% else %}
+                            <div class="text-center py-4">
+                                <div class="mb-3">
+                                    <i class="fas fa-flask display-4 text-primary opacity-50"></i>
+                                </div>
+                                <h6 class="fw-bold mb-2">نتایج اینجا نمایش داده می‌شوند</h6>
+                                <p class="text-secondary small mb-0">
+                                    برای محاسبه، مقادیر مورد نظر را وارد کنید.
+                                </p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const config = {
+        'vss': { min: 0, max: 1000, step: 1, format: '0' },
+        'sss': { min: 0, max: 100, step: 0.1, format: '0.1' },
+        'se': { min: 0, max: 100, step: 0.1, format: '0.1' },
+        'dg': { min: 0, max: 100, step: 0.1, format: '0.1' },
+        'dh': { min: 0, max: 100, step: 0.1, format: '0.1' },
+        'dpg': { min: 0, max: 100, step: 0.1, format: '0.1' },
+        'dph': { min: 0, max: 100, step: 0.1, format: '0.1' },
+        'ts': { min: 10, max: 30, step: 1, format: '0' },
+        'tv': { min: 10, max: 30, step: 1, format: '0' },
+        'vo': { min: 0.1, max: 10, step: 0.1, format: '0.1' },
+        'p': { min: 200, max: 1495, step: 1, format: '0' },
+        'ef': { min: 0, max: 100, step: 1, format: '0' }
+    };
+
+    function updateValue(input, increment) {
+        const settings = config[input.id];
+        if (!settings) return;
+
+        let value = parseFloat(input.value) || settings.min;
+        value = increment ? 
+            Math.min(settings.max, value + settings.step) : 
+            Math.max(settings.min, value - settings.step);
+
+        input.value = value.toFixed(settings.format === '0' ? 0 : 1);
+    }
+
+    // Handle increment/decrement buttons
+    document.querySelectorAll('.input-minus, .input-plus').forEach(button => {
+        let autoRepeatTimer = null;
+        let repeatDelay = 500; // Initial delay before auto-repeat
+        let repeatInterval = 100; // Interval between auto-repeats
+
+        button.addEventListener('mousedown', function(e) {
+            e.preventDefault();
+            const input = this.parentElement.querySelector('input');
+            const increment = this.classList.contains('input-plus');
+            
+            // Initial click
+            updateValue(input, increment);
+            
+            // Setup auto-repeat
+            autoRepeatTimer = setTimeout(() => {
+                autoRepeatTimer = setInterval(() => {
+                    updateValue(input, increment);
+                }, repeatInterval);
+            }, repeatDelay);
+        });
+
+        // Clear timers on mouse up/leave
+        ['mouseup', 'mouseleave'].forEach(event => {
+            button.addEventListener(event, function() {
+                if (autoRepeatTimer) {
+                    clearTimeout(autoRepeatTimer);
+                    clearInterval(autoRepeatTimer);
+                }
+            });
+        });
+    });
+
+    // Handle column diameter selection
+    const columnDiameter = document.getElementById('column_diameter');
+    const voInput = document.getElementById('vo');
+    
+    columnDiameter.addEventListener('change', function() {
+        if (this.value === '48') {
+            voInput.value = '1.1';
+        } else {
+            voInput.value = '2.5';
+        }
+    });
+
+    // Handle switch toggles
+    document.querySelectorAll('.form-check-input').forEach(checkbox => {
+        // Initialize state on page load
+        const inputId = checkbox.id.replace('_trigger', '');
+        const input = document.getElementById(inputId);
+        if (input) {
+            const buttons = input.parentElement.querySelectorAll('button');
+            const select = document.getElementById('column_diameter');
+            
+            if (inputId === 'vo' && select) {
+                select.disabled = !checkbox.checked;
+            }
+            
+            input.disabled = !checkbox.checked;
+            buttons.forEach(button => button.disabled = !checkbox.checked);
+        }
+        
+        // Handle changes
+        checkbox.addEventListener('change', function() {
+            const inputId = this.id.replace('_trigger', '');
+            const input = document.getElementById(inputId);
+            if (!input) return;
+            
+            const buttons = input.parentElement.querySelectorAll('button');
+            const select = document.getElementById('column_diameter');
+            
+            if (inputId === 'vo' && select) {
+                select.disabled = !this.checked;
+            }
+            
+            input.disabled = !this.checked;
+            buttons.forEach(button => button.disabled = !this.checked);
+        });
+    });
+
+    // Initialize tooltips
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    });
+
+    // Handle manual input changes
+    document.querySelectorAll('input[type="text"]').forEach(input => {
+        input.addEventListener('change', function() {
+            const settings = config[this.id];
+            if (!settings) return;
+            
+            let value = parseFloat(this.value) || settings.min;
+            value = Math.max(settings.min, Math.min(settings.max, value));
+            this.value = value.toFixed(settings.format === '0' ? 0 : 1);
+        });
+    });
+});
+</script>
+{% endblock %}

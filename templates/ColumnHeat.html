@@ -1,0 +1,228 @@
+{% extends "base.html" %}
+{% block title %}محاسبه اتلاف حرارت ستون تقطیر{% endblock %}
+{% block content %}
+<section class="calc-cont">
+    <div class="container py-4">
+        <!-- Title Section -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="d-flex align-items-center">
+                    <div class="bg-primary bg-opacity-10 p-3 rounded-circle me-3">
+                        <i class="fas fa-fire text-primary fs-3"></i>
+                    </div>
+                    <div>
+                        <h1 class="h3 mb-1">محاسبه اتلاف حرارت ستون تقطیر</h1>
+                        <p class="text-secondary mb-0">بر اساس توان و دمای آب</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <!-- Calculator Form -->
+            <div class="col-12 col-lg-6">
+                <form method="POST" id="calc">
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-header bg-light py-3">
+                            <h5 class="card-title mb-0">
+                                <i class="fas fa-sliders-h me-2 text-primary"></i>
+                                پارامترهای محاسبه
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label class="form-label">
+                                    مصرف آب، <span class="fw-bold">لیتر در ساعت</span>
+                                    <i class="fa fa-info-circle ms-1 text-primary" data-bs-toggle="tooltip" title="مصرف آب برای خنک‌سازی"></i>
+                                </label>
+                                <div class="input-group">
+                                    <input value="{{ form_data.v if form_data and form_data.v else '70' }}" name="v" id="v" type="text" class="form-control" inputmode="decimal">
+                                    <button type="button" class="btn btn-outline-secondary input-minus"><i class="fa fa-minus"></i></button>
+                                    <button type="button" class="btn btn-outline-secondary input-plus"><i class="fa fa-plus"></i></button>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">
+                                    دمای آب ورودی، <span class="fw-bold">°C</span>
+                                    <i class="fa fa-info-circle ms-1 text-primary" data-bs-toggle="tooltip" title="دمای آب در ورودی"></i>
+                                </label>
+                                <div class="input-group">
+                                    <input value="{{ form_data.tin if form_data and form_data.tin else '20' }}" name="tin" id="tin" type="text" class="form-control" inputmode="decimal">
+                                    <span class="input-group-text">°C</span>
+                                    <button type="button" class="btn btn-outline-secondary input-minus"><i class="fa fa-minus"></i></button>
+                                    <button type="button" class="btn btn-outline-secondary input-plus"><i class="fa fa-plus"></i></button>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">
+                                    دمای آب خروجی، <span class="fw-bold">°C</span>
+                                    <i class="fa fa-info-circle ms-1 text-primary" data-bs-toggle="tooltip" title="دمای آب در خروجی (توصیه: 40-50°C)"></i>
+                                </label>
+                                <div class="input-group">
+                                    <input value="{{ form_data.tout if form_data and form_data.tout else '45' }}" name="tout" id="tout" type="text" class="form-control" inputmode="decimal">
+                                    <span class="input-group-text">°C</span>
+                                    <button type="button" class="btn btn-outline-secondary input-minus"><i class="fa fa-minus"></i></button>
+                                    <button type="button" class="btn btn-outline-secondary input-plus"><i class="fa fa-plus"></i></button>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">
+                                    توان مصرفی، <span class="fw-bold">کیلووات</span>
+                                    <i class="fa fa-info-circle ms-1 text-primary" data-bs-toggle="tooltip" title="توان مصرفی سیستم"></i>
+                                </label>
+                                <div class="input-group">
+                                    <input value="{{ form_data.w if form_data and form_data.w else '3' }}" name="w" id="w" type="text" class="form-control" inputmode="decimal">
+                                    <button type="button" class="btn btn-outline-secondary input-minus"><i class="fa fa-minus"></i></button>
+                                    <button type="button" class="btn btn-outline-secondary input-plus"><i class="fa fa-plus"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-lg w-100">
+                        <i class="fas fa-calculator me-2"></i>
+                        محاسبه
+                    </button>
+                </form>
+            </div>
+
+            <!-- Results Section -->
+            <div class="col-12 col-lg-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-header bg-primary bg-opacity-10 py-3">
+                        <h5 class="card-title mb-0 text-primary">
+                            <i class="fas fa-chart-line me-2"></i>
+                            نتایج محاسبه
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        {% if result %}
+                            {% if result.error %}
+                                <div class="alert alert-danger">
+                                    <i class="fas fa-exclamation-circle me-2"></i>
+                                    {{ result.error }}
+                                </div>
+                            {% else %}
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <tbody>
+                                            <tr>
+                                                <td class="text-secondary">قدرت وقتی برای خودت کار می‌کنی</td>
+                                                <td class="font-monospace fw-bold">{{ "%.3f"|format(result.result.power_self) }} <span class="text-secondary">کیلووات</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-secondary">اتلاف حرارت هنگام کار برای خودتان (مطلق)</td>
+                                                <td class="font-monospace fw-bold">{{ "%.3f"|format(result.result.heat_loss_self_abs) }} <span class="text-secondary">کیلووات</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-secondary">اتلاف حرارت هنگام کار برای خودتان (نسبی)</td>
+                                                <td class="font-monospace fw-bold">{{ "%.2f"|format(result.result.heat_loss_self_rel) }} <span class="text-secondary">%</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-secondary">قدرت در انتخاب</td>
+                                                <td class="font-monospace fw-bold">{{ "%.3f"|format(result.result.power_selection) }} <span class="text-secondary">کیلووات</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-secondary">اتلاف حرارت در طول انتخاب (مطلق)</td>
+                                                <td class="font-monospace fw-bold">{{ "%.3f"|format(result.result.heat_loss_selection_abs) }} <span class="text-secondary">کیلووات</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-secondary">اتلاف حرارت در طول انتخاب (نسبی)</td>
+                                                <td class="font-monospace fw-bold">{{ "%.2f"|format(result.result.heat_loss_selection_rel) }} <span class="text-secondary">%</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            {% endif %}
+                        {% else %}
+                            <div class="text-center py-4">
+                                <div class="mb-3">
+                                    <i class="fas fa-fire display-4 text-primary opacity-50"></i>
+                                </div>
+                                <h6 class="fw-bold mb-2">نتایج اینجا نمایش داده می‌شوند</h6>
+                                <p class="text-secondary small mb-0">
+                                    برای محاسبه، مقادیر مورد نظر را وارد کنید.
+                                </p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const config = {
+        'v': { min: 0.1, max: 1000, step: 1, format: '0' },
+        'tin': { min: 0, max: 100, step: 1, format: '0' },
+        'tout': { min: 0, max: 100, step: 1, format: '0' },
+        'w': { min: 0.1, max: 100, step: 0.1, format: '0.1' }
+    };
+
+    function updateValue(input, increment) {
+        const settings = config[input.id];
+        if (!settings) return;
+
+        let value = parseFloat(input.value) || settings.min;
+        value = increment ? 
+            Math.min(settings.max, value + settings.step) : 
+            Math.max(settings.min, value - settings.step);
+
+        input.value = value.toFixed(settings.format === '0' ? 0 : 1);
+    }
+
+    // Handle increment/decrement buttons
+    document.querySelectorAll('.input-minus, .input-plus').forEach(button => {
+        let autoRepeatTimer = null;
+        let repeatDelay = 500;
+        let repeatInterval = 100;
+
+        button.addEventListener('mousedown', function(e) {
+            e.preventDefault();
+            const input = this.parentElement.querySelector('input');
+            const increment = this.classList.contains('input-plus');
+            
+            updateValue(input, increment);
+            
+            autoRepeatTimer = setTimeout(() => {
+                autoRepeatTimer = setInterval(() => {
+                    updateValue(input, increment);
+                }, repeatInterval);
+            }, repeatDelay);
+        });
+
+        ['mouseup', 'mouseleave'].forEach(event => {
+            button.addEventListener(event, function() {
+                if (autoRepeatTimer) {
+                    clearTimeout(autoRepeatTimer);
+                    clearInterval(autoRepeatTimer);
+                }
+            });
+        });
+    });
+
+    // Initialize tooltips
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    });
+
+    // Handle manual input changes
+    document.querySelectorAll('input[type="text"]').forEach(input => {
+        input.addEventListener('change', function() {
+            const settings = config[this.id];
+            if (!settings) return;
+            
+            let value = parseFloat(this.value) || settings.min;
+            value = Math.max(settings.min, Math.min(settings.max, value));
+            this.value = value.toFixed(settings.format === '0' ? 0 : 1);
+        });
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,219 @@
+{% extends "base.html" %}
+{% block title %}ماشین حساب توان المنت حرارتی{% endblock %}
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <!-- Page Header -->
+            <div class="page-header mb-4">
+                <h1 class="display-5 fw-bold">
+                    <i class="fas fa-bolt text-primary me-2"></i>
+                    ماشین حساب توان المنت حرارتی
+                </h1>
+                <p class="lead text-muted">
+                    با استفاده از این ابزار می‌توانید توان المنت حرارتی را بر اساس ولتاژ اعمال شده یا مقاومت المنت محاسبه کنید.
+                </p>
+            </div>
+
+            <!-- Calculator Card -->            <div class="card shadow-sm border-0 mb-4 rounded-4">
+                <div class="card-header bg-primary text-white py-3 rounded-top-4">
+                    <h5 class="mb-0">
+                        <i class="fas fa-calculator me-2"></i>
+                        فرم محاسبه
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <div id="calc">
+                        <!-- Method Selection -->
+                        <div id="div_by" class="mb-4">
+                            <label for="by" class="form-label">
+                                <i class="fas fa-cog text-primary me-1"></i>
+                                <b>روش محاسبه:</b>
+                            </label>
+                            <select data-p="by" id="by" class="form-select">
+                                <option value="power">بر اساس توان اسمی عنصر گرمایش</option>
+                                <option value="resistance">بر اساس مقاومت عنصر گرمایش</option>
+                            </select>
+                        </div>
+
+                        <!-- Nominal Power Input -->
+                        <div id="div_v1" class="mb-4">
+                            <label for="v1" class="form-label">
+                                <i class="fas fa-plug text-primary me-1"></i>
+                                <b>توان اسمی المنت حرارتی:</b>
+                            </label>
+                            <div class="input-group">
+                                <input value="3000" data-p="v1" id="v1" type="number" class="form-control" inputmode="decimal">
+                                <span class="input-group-text">وات</span>
+                                <button class="btn btn-outline-secondary input-minus">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <button class="btn btn-outline-secondary input-plus">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Resistance Input -->
+                        <div id="div_rr" class="mb-4" style="display: none;">
+                            <label for="rr" class="form-label">
+                                <i class="fas fa-ohm text-primary me-1"></i>
+                                <b>مقاومت المنت حرارتی:</b>
+                            </label>
+                            <div class="input-group">
+                                <input value="16" data-p="rr" id="rr" type="number" class="form-control" inputmode="decimal">
+                                <span class="input-group-text">اهم</span>
+                                <button class="btn btn-outline-secondary input-minus">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <button class="btn btn-outline-secondary input-plus">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Required Power Input -->
+                        <div id="div_v2" class="mb-4">
+                            <label for="v2" class="form-label">
+                                <i class="fas fa-power-off text-primary me-1"></i>
+                                <b>توان خروجی مورد نیاز:</b>
+                            </label>
+                            <div class="input-group">
+                                <input value="2000" data-p="v2" id="v2" type="number" class="form-control" inputmode="decimal">
+                                <span class="input-group-text">وات</span>
+                                <button class="btn btn-outline-secondary input-minus">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <button class="btn btn-outline-secondary input-plus">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Calculate Button -->
+                        <div class="mb-4 text-center">
+                            <button type="button" id="calculateBtn" class="btn btn-primary btn-lg px-5">
+                                <i class="fas fa-calculator me-2"></i>
+                                محاسبه
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Results Section -->                    <div class="mt-4 p-3 bg-light rounded-4">
+                        <div class="text-center mb-3">
+                            <i class="fas fa-calculator text-primary fs-4 me-2" data-bs-toggle="tooltip" data-bs-placement="top"
+                               title="محاسبه پس از تغییر داده‌ها به طور خودکار انجام می‌شود"></i>
+                        </div>
+                        <div class="calc-result">
+                            <!-- Results will be inserted here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const calc = {
+        elements: {
+            by: document.getElementById('by'),
+            v1: document.getElementById('v1'),
+            v2: document.getElementById('v2'),
+            rr: document.getElementById('rr'),
+            div_v1: document.getElementById('div_v1'),
+            div_rr: document.getElementById('div_rr'),
+            result: document.querySelector('.calc-result'),
+            calculateBtn: document.getElementById('calculateBtn')
+        },
+        
+        init: function() {
+            this.bindEvents();
+        },
+        
+        bindEvents: function() {
+            const elements = this.elements;
+            
+            // Calculate button click
+            elements.calculateBtn.addEventListener('click', () => this.calculate());
+
+            // Method change
+            elements.by.addEventListener('change', () => {
+                if (elements.by.value === 'power') {
+                    elements.div_v1.style.display = '';
+                    elements.div_rr.style.display = 'none';
+                } else {
+                    elements.div_v1.style.display = 'none';
+                    elements.div_rr.style.display = '';
+                }
+            });
+
+            // Plus/minus buttons
+            document.querySelectorAll('.input-plus').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const input = e.target.closest('.input-group').querySelector('input');
+                    input.value = parseFloat(input.value || 0) + 1;
+                });
+            });
+
+            document.querySelectorAll('.input-minus').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const input = e.target.closest('.input-group').querySelector('input');
+                    input.value = Math.max(0, parseFloat(input.value || 0) - 1);
+                });
+            });
+        },
+
+        calculate: function() {
+            const elements = this.elements;
+            const data = {
+                by: elements.by.value,
+                v1: parseFloat(elements.v1.value) || 0,
+                v2: parseFloat(elements.v2.value) || 0,
+                rr: parseFloat(elements.rr.value) || 0
+            };
+
+            // Change button state to loading
+            elements.calculateBtn.disabled = true;
+            elements.calculateBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>در حال محاسبه...';
+
+            fetch('/calculate_element_power', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(result => {
+                let html = '<div>';
+                result.forEach(item => {
+                    html += `
+                        <div class="border p-1 fs-14 row mb-3 br-4">
+                            <div class="col-8 text-start">${item[0]}</div>
+                            <div class="col-4 text-end">
+                                <b>${item[1]}</b> <span class="text-secondary">${item[2]}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+                elements.result.innerHTML = html;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                elements.result.innerHTML = '<div class="alert alert-danger">خطا در محاسبه. لطفا دوباره تلاش کنید.</div>';
+            })
+            .finally(() => {
+                // Restore button state
+                elements.calculateBtn.disabled = false;
+                elements.calculateBtn.innerHTML = '<i class="fas fa-calculator me-2"></i>محاسبه';
+            });
+        }
+    };
+
+    calc.init();
+});
+</script>
+{% endblock %}

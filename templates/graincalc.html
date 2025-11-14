@@ -1,0 +1,354 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="calc-cont">
+    <div class="container py-4">
+        <!-- Title Section -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="d-flex align-items-center">
+                    <div class="bg-info bg-opacity-10 p-3 rounded-circle me-3">
+                        <i class="fas fa-seedling text-info fs-3"></i>
+                    </div>
+                    <div>
+                        <h1 class="h3 mb-1">ماشین حساب پوره غلات</h1>
+                        <p class="text-secondary mb-0">محاسبات تخمیر غلات و پوره‌های نشاسته‌ای</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <!-- Calculator Form -->
+            <div class="col-12 col-lg-6">
+                <form method="POST" id="calc">
+                    <!-- Materials Section -->
+                    <div id="materialInputs" class="mb-4">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-header bg-light py-3">
+                                <h5 class="card-title mb-0">
+                                    <i class="fas fa-seedling me-2 text-info"></i>
+                                    مشخصات مواد اولیه
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row g-3">
+                                    <div class="col-12">
+                                        <label class="form-label">نوع مواد اولیه</label>
+                                        <select data-p="sir" id="sir" class="form-select">
+                                            <option data-krah="44" data-sah="3.8">نخود فرنگی</option>
+                                            <option data-krah="52" data-sah="1.5">گندم سیاه</option>
+                                            <option data-krah="100" data-sah="0">نشاسته</option>
+                                            <option data-krah="59.8" data-sah="1.6">ذرت</option>
+                                            <option data-krah="67.1" data-sah="0.5">آرد گندم (درجه یک)</option>
+                                            <option data-krah="62.8" data-sah="0.9">آرد گندم (درجه دو)</option>
+                                            <option data-krah="68.7" data-sah="0.2">آرد گندم (درجه ممتاز)</option>
+                                            <option data-krah="55.8" data-sah="1">آرد گندم (سبوس‌دار)</option>
+                                            <option data-krah="59.3" data-sah="0.9">آرد چاودار (پوست کنده)</option>
+                                            <option data-krah="56" data-sah="1">آرد چاودار (سبوس‌دار)</option>
+                                            <option data-krah="63.6" data-sah="0.7">آرد چاودار (الک شده)</option>
+                                            <option data-krah="23.5" data-sah="1">سبوس گندم</option>
+                                            <option data-krah="54.7" data-sah="1.9">ارزن</option>
+                                            <option data-krah="54" data-sah="1.5">گندم</option>
+                                            <option data-krah="76.6" data-sah="2">برنج</option>
+                                            <option data-krah="52" data-sah="4">چاودار</option>
+                                            <option data-krah="0" data-sah="100">شکر</option>
+                                            <option data-krah="59.8" data-sah="1.6">مالت ذرت</option>
+                                            <option data-krah="40" data-sah="2">مالت جو دوسر</option>
+                                            <option data-krah="54.7" data-sah="1.9">مالت ارزن</option>
+                                            <option data-krah="54" data-sah="1.5">مالت گندم</option>
+                                            <option data-krah="52" data-sah="4">مالت چاودار</option>
+                                            <option data-krah="48.1" data-sah="1.9">مالت جو</option>
+                                            <option data-krah="48.1" data-sah="1.9">جو</option>
+                                            <option data-krah="0" data-sah="0">نسخه خودتان</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-6">
+                                        <label class="form-label">وزن، <span class="fw-bold">کیلوگرم</span></label>
+                                        <div class="input-group">
+                                            <input value="5" name="ms_0" id="ms" type="text" class="form-control" inputmode="decimal">
+                                            <button type="button" class="btn btn-outline-secondary input-minus"><i class="fa fa-minus"></i></button>
+                                            <button type="button" class="btn btn-outline-secondary input-plus"><i class="fa fa-plus"></i></button>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <label class="form-label">
+                                            <i class="fa fa-info-circle me-1 text-info" data-bs-toggle="tooltip" title="میانگین درصد نشاسته در ماده اولیه"></i>
+                                            نشاسته، <span class="fw-bold">٪</span>
+                                        </label>
+                                        <div class="input-group">
+                                            <input value="51.5" name="krah_0" id="krah" type="text" class="form-control" inputmode="decimal">
+                                            <button type="button" class="btn btn-outline-secondary input-minus"><i class="fa fa-minus"></i></button>
+                                            <button type="button" class="btn btn-outline-secondary input-plus"><i class="fa fa-plus"></i></button>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <label class="form-label">
+                                            <i class="fa fa-info-circle me-1 text-info" data-bs-toggle="tooltip" title="میانگین درصد قند در ماده اولیه"></i>
+                                            قند، <span class="fw-bold">٪</span>
+                                        </label>
+                                        <div class="input-group">
+                                            <input value="2" name="sah_0" id="sah" type="text" class="form-control" inputmode="decimal">
+                                            <button type="button" class="btn btn-outline-secondary input-minus"><i class="fa fa-minus"></i></button>
+                                            <button type="button" class="btn btn-outline-secondary input-plus"><i class="fa fa-plus"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer bg-light border-0">
+                                <button type="button" id="addMaterial" class="btn btn-outline-info w-100">
+                                    <i class="fa fa-plus-circle me-2"></i>افزودن ماده اولیه دیگر
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Calculation Method -->
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-header bg-light py-3">
+                            <h5 class="card-title mb-0">
+                                <i class="fas fa-calculator me-2 text-info"></i>
+                                روش محاسبه
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <select name="by" id="by" class="form-select mb-3">
+                                <option value="by_hydromodule">محاسبه توسط هیدرومدول</option>
+                                <option value="by_water_volume">محاسبه بر اساس حجم آب</option>
+                            </select>
+
+                            <div id="waterVolumeInput" style="display: none;">
+                                <label class="form-label">حجم آب، <span class="fw-bold">لیتر</span></label>
+                                <div class="input-group">
+                                    <input value="20" name="v" id="v" type="text" class="form-control" inputmode="decimal">
+                                    <button type="button" class="btn btn-outline-secondary input-minus"><i class="fa fa-minus"></i></button>
+                                    <button type="button" class="btn btn-outline-secondary input-plus"><i class="fa fa-plus"></i></button>
+                                </div>
+                            </div>
+
+                            <div id="hydromoduleInput">
+                                <label class="form-label">هیدروماژول، <span class="fw-bold">۱:</span></label>
+                                <div class="input-group">
+                                    <input value="4" name="gm" id="gm" type="text" class="form-control" inputmode="decimal">
+                                    <button type="button" class="btn btn-outline-secondary input-minus"><i class="fa fa-minus"></i></button>
+                                    <button type="button" class="btn btn-outline-secondary input-plus"><i class="fa fa-plus"></i></button>
+                                </div>
+                            </div>
+
+                            <div class="form-check form-switch mt-3">
+                                <input type="checkbox" class="form-check-input" id="efCheck" name="ef_enabled">
+                                <label class="form-check-label">راندمان تخمیر، <span class="fw-bold">%</span></label>
+                            </div>
+
+                            <div id="efficiencyInput" class="mt-3" style="display: none;">
+                                <div class="input-group">
+                                    <input value="100" name="ef" type="text" class="form-control" inputmode="decimal">
+                                    <button type="button" class="btn btn-outline-secondary input-minus"><i class="fa fa-minus"></i></button>
+                                    <button type="button" class="btn btn-outline-secondary input-plus"><i class="fa fa-plus"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-info btn-lg w-100">
+                        <i class="fas fa-calculator me-2"></i>
+                        محاسبه
+                    </button>
+                </form>
+            </div>
+
+            <!-- Results Section -->
+            <div class="col-12 col-lg-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-header bg-info bg-opacity-10 py-3">
+                        <h5 class="card-title mb-0 text-info">
+                            <i class="fas fa-flask me-2"></i>
+                            نتایج محاسبه
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        {% if result %}
+                            {% if result.error %}
+                                <div class="alert alert-danger">
+                                    <i class="fas fa-exclamation-circle me-2"></i>
+                                    {{ result.error }}
+                                </div>
+                            {% else %}
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <tbody>
+                                            <tr>
+                                                <td class="text-secondary">هیدروماژول</td>
+                                                <td class="font-monospace fw-bold">1:{{ result.hydromodule }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-secondary">حجم آب مورد نیاز</td>
+                                                <td class="font-monospace fw-bold">{{ result.water_volume }} لیتر</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-secondary">حجم الکل</td>
+                                                <td class="font-monospace fw-bold">{{ result.alcohol_volume }} لیتر</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-secondary">درصد اشباع قند</td>
+                                                <td class="font-monospace fw-bold">{{ result.sugar_saturation }}%</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-secondary">جرم معادل قند</td>
+                                                <td class="font-monospace fw-bold">{{ result.sugar_mass }} کیلوگرم</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-secondary">درصد الکل در براگا</td>
+                                                <td class="font-monospace fw-bold">{{ result.braga_strength }}% حجمی</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-secondary">حجم تقطیر 40%</td>
+                                                <td class="font-monospace fw-bold">{{ result.volume_40 }} لیتر</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-secondary">حجم کل سوسپانسیون</td>
+                                                <td class="font-monospace fw-bold">{{ result.total_volume }} لیتر</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-secondary">جرم کل</td>
+                                                <td class="font-monospace fw-bold">{{ result.total_mass }} کیلوگرم</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-secondary">درصد نشاسته کل</td>
+                                                <td class="font-monospace fw-bold">{{ result.total_starch_percent }}%</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-secondary">درصد قند کل</td>
+                                                <td class="font-monospace fw-bold">{{ result.total_sugar_percent }}%</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            {% endif %}
+                        {% else %}
+                            <div class="text-center py-4">
+                                <div class="mb-3">
+                                    <i class="fas fa-seedling display-4 text-info opacity-50"></i>
+                                </div>
+                                <h6 class="fw-bold mb-2">حداقل یک نوع ماده اولیه باید اضافه شود</h6>
+                                <p class="text-secondary small mb-0">
+                                    مقادیر استاندارد نشاسته و قند پس از انتخاب نوع ماده اولیه به طور خودکار وارد می‌شوند.<br>
+                                    در صورت لزوم، می‌توان آنها را به مقادیر دیگری تغییر داد.
+                                </p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle calculation method change
+    document.getElementById('by').addEventListener('change', function() {
+        const waterVolumeInput = document.getElementById('waterVolumeInput');
+        const hydromoduleInput = document.getElementById('hydromoduleInput');
+        
+        if (this.value === 'by_water_volume') {
+            waterVolumeInput.style.display = 'block';
+            hydromoduleInput.style.display = 'none';
+        } else {
+            waterVolumeInput.style.display = 'none';
+            hydromoduleInput.style.display = 'block';
+        }
+    });
+
+    // Handle efficiency checkbox
+    document.getElementById('efCheck').addEventListener('change', function() {
+        document.getElementById('efficiencyInput').style.display = this.checked ? 'block' : 'none';
+    });
+
+    // Handle material selection change
+    document.getElementById('sir').addEventListener('change', function() {
+        const option = this.options[this.selectedIndex];
+        document.getElementById('krah').value = option.getAttribute('data-krah');
+        document.getElementById('sah').value = option.getAttribute('data-sah');
+    });
+
+    // Handle increment/decrement buttons
+    document.querySelectorAll('.input-minus, .input-plus').forEach(button => {
+        button.addEventListener('click', function() {
+            const input = this.parentElement.querySelector('input');
+            const step = 0.1;
+            const value = parseFloat(input.value) || 0;
+            
+            if (this.classList.contains('input-plus')) {
+                input.value = (value + step).toFixed(1);
+            } else {
+                input.value = Math.max(0, (value - step)).toFixed(1);
+            }
+        });
+    });
+
+    let materialCount = 1;
+    
+    // Add new material inputs
+    document.getElementById('addMaterial').addEventListener('click', function() {
+        const template = document.querySelector('#materialInputs .card').cloneNode(true);
+        
+        // Create a container for the new card
+        const container = document.createElement('div');
+        container.className = 'mb-4';
+        container.appendChild(template);
+        
+        // Update IDs and names
+        template.querySelectorAll('input').forEach(input => {
+            const baseName = input.name.split('_')[0];
+            input.name = `${baseName}_${materialCount}`;
+            input.id = `${baseName}_${materialCount}`;
+        });
+
+        materialCount++;
+        
+        // Remove the add button from the clone
+        template.querySelector('#addMaterial').remove();
+        
+        // Add a remove button
+        const footer = document.createElement('div');
+        footer.className = 'card-footer bg-light border-0';
+        footer.innerHTML = `
+            <button type="button" class="btn btn-outline-danger w-100">
+                <i class="fa fa-minus-circle me-2"></i>حذف ماده اولیه
+            </button>
+        `;
+        
+        // Add remove functionality
+        footer.querySelector('button').onclick = function() {
+            container.remove();
+        };
+        template.appendChild(footer);
+        
+        document.getElementById('materialInputs').appendChild(container);
+
+        // Reinitialize increment/decrement buttons for new inputs
+        template.querySelectorAll('.input-minus, .input-plus').forEach(button => {
+            button.addEventListener('click', function() {
+                const input = this.parentElement.querySelector('input');
+                const step = 0.1;
+                const value = parseFloat(input.value) || 0;
+                
+                if (this.classList.contains('input-plus')) {
+                    input.value = (value + step).toFixed(1);
+                } else {
+                    input.value = Math.max(0, (value - step)).toFixed(1);
+                }
+            });
+        });
+
+        // Initialize material selection change for new select
+        template.querySelector('select').addEventListener('change', function() {
+            const option = this.options[this.selectedIndex];
+            const container = this.closest('.card');
+            container.querySelector('[name^="krah"]').value = option.getAttribute('data-krah');
+            container.querySelector('[name^="sah"]').value = option.getAttribute('data-sah');
+        });
+    });
+});
+</script>
+{% endblock %}

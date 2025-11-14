@@ -1,0 +1,119 @@
+<!-- Fermentation Calculations -->
+<li class="nav-item dropdown">
+  <a class="nav-link dropdown-toggle" href="#" id="fermentationDropdown" role="button" data-bs-toggle="dropdown">
+    <i class="fas fa-flask ms-1"></i>
+    محاسبات تخمیر
+  </a>
+  <ul class="dropdown-menu" aria-labelledby="fermentationDropdown">
+    <li>
+      <a class="dropdown-item" href="{{ url_for("sugercalc") }}">
+        <i class="fas fa-calculator ms-2"></i>
+        محاسبه قند تخمیر
+      </a>
+    </li>
+    <li>
+      <a class="dropdown-item" href="{{ url_for("graincalc") }}">
+        <i class="fas fa-seedling ms-2"></i>
+        تخمیر غلات
+      </a>
+    </li>
+    <li>
+      <a class="dropdown-item" href="{{ url_for("fruitcalc") }}">
+        <i class="fas fa-apple-alt ms-2"></i>
+        تخمیر میوه
+      </a>
+    </li>
+    <li>
+      <a class="dropdown-item" href="{{ url_for("fermentcalc") }}">
+        <i class="fas fa-percentage ms-2"></i>
+        میزان الکل تخمیر
+      </a>
+    </li>
+  </ul>
+</li>
+
+<!-- Distillation Calculations -->
+<li class="nav-item dropdown">
+  <a class="nav-link dropdown-toggle" href="#" id="distillationDropdown" role="button" data-bs-toggle="dropdown">
+    <i class="fas fa-vial ms-1"></i>
+    محاسبات تقطیر
+  </a>
+  <ul class="dropdown-menu" aria-labelledby="distillationDropdown">
+    <li>
+      <a class="dropdown-item" href="{{ url_for("refluxcalc") }}">
+        <i class="fas fa-calculator ms-2"></i>
+        نسبت رفلاکس (روش اول)
+      </a>
+    </li>
+    <li>
+      <a class="dropdown-item" href="{{ url_for("refluxcalc1") }}">
+        <i class="fas fa-calculator ms-2"></i>
+        نسبت رفلاکس (روش دوم)
+      </a>
+    </li>
+    <li>
+      <a class="dropdown-item" href="{{ url_for("elementpower") }}">
+        <i class="fas fa-bolt ms-2"></i>
+        توان المنت
+      </a>
+    </li>
+    <li>
+      <a class="dropdown-item" href="{{ url_for("spncalc") }}">
+        <i class="fas fa-cogs ms-2"></i>
+        پکینگ اسپیرال
+      </a>
+    </li>
+    <li>
+      <a class="dropdown-item" href="{{ url_for("azeotropecalc") }}">
+        <i class="fas fa-microscope ms-2"></i>
+        آزئوتروپ
+      </a>
+    </li>
+    <li>
+      <a class="dropdown-item" href="{{ url_for("spiritrun") }}">
+        <i class="fas fa-flask ms-2"></i>
+        اسپیریت ران
+      </a>
+    </li>
+    <li>
+      <a class="dropdown-item" href="{{ url_for("remainingliquid") }}">
+        <i class="fas fa-tint ms-2"></i>
+        مایع باقی‌مانده در مخزن
+      </a>
+    </li>
+    <li>
+      <a class="dropdown-item" href="{{ url_for("boilingpoint") }}">
+        <i class="fas fa-thermometer-half ms-2"></i>
+        نقطه جوش بر اساس الکل و فشار
+      </a>
+    </li>
+    <li>
+      <a class="dropdown-item" href="{{ url_for("columnheat") }}">
+        <i class="fas fa-fire ms-2"></i>
+        اتلاف حرارت ستون تقطیر
+      </a>
+    </li>
+    <li>
+      <a class="dropdown-item" href="{{ url_for("heattime") }}">
+        <i class="fas fa-clock ms-2"></i>
+        زمان گرم شدن مخزن تقطیر
+      </a>
+    </li>
+  </ul>
+</li>
+
+<!-- Other Calculators -->
+<li class="nav-item dropdown">
+  <a class="nav-link dropdown-toggle" href="#" id="otherCalculatorsDropdown" role="button" data-bs-toggle="dropdown">
+    <i class="fas fa-calculator ms-1"></i>
+    سایر ماشین حساب‌ها
+  </a>
+  <ul class="dropdown-menu" aria-labelledby="otherCalculatorsDropdown">
+    <li>
+      <a class="dropdown-item" href="{{ url_for("bloodalco") }}">
+        <i class="fas fa-wine-bottle ms-2"></i>
+        محاسبه الکل خون
+      </a>
+    </li>
+  </ul>
+</li>

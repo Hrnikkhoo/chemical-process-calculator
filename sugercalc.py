@@ -1,0 +1,77 @@
+from flask import request
+
+# ثابت‌ها
+sv = 0.63
+sas = 0.682
+sd = 40
+ef40 = 100
+
+ch4n2o2 = 2
+kh2po4 = 4.5
+mgso4 = 2
+nacl = 4
+kcl = 10
+mnso4 = 0.6
+znso4 = 0.6
+
+class SugerCalc:
+    @staticmethod
+    def calculate():
+        try:
+            method = request.form["by"]
+            ms = float(request.form.get("ms", 0))
+            ef = float(request.form.get("ef", 100))
+
+            if method == "by_hydromodule":
+                gm = float(request.form.get("gm", 0))
+                vW = ms * gm
+                vWTotal = vW + ms * sv
+                vAS = ef / 100 * ms * sas
+                sb = (ms / (ms + vW)) * 100
+                s = vAS * 100 / vWTotal
+                v40 = ef40 / 100 * vWTotal * s / sd
+
+            elif method == "by_water_volume":
+                v = float(request.form.get("v", 0))
+                gm = v / ms
+                vWTotal = v + ms * sv
+                vAS = ef / 100 * ms * sas
+                sb = (ms / (ms + v)) * 100
+                s = vAS * 100 / vWTotal
+                v40 = ef40 / 100 * vWTotal * s / sd
+                vW = v
+
+            elif method == "by_total_volume":
+                vb = float(request.form.get("vb", 0))
+                vW = vb - ms * sv
+                gm = vW / ms
+                vAS = ef / 100 * ms * sas
+                sb = (ms / (ms + vW)) * 100
+                s = vAS * 100 / vb
+                v40 = ef40 / 100 * vb * s / sd
+                vWTotal = vb
+
+            else:
+                return {"error": "روش انتخابی نامعتبر است"}
+
+            result = {
+                "vW": round(vW, 3),
+                "gm": f"1 : {round(gm, 1)}",
+                "vWTotal": round(vWTotal, 3),
+                "vAS": round(vAS, 3),
+                "sb": round(sb, 1),
+                "s": round(s, 2),
+                "v40": round(v40, 3),
+                "nutrients": {
+                    "carbamide": round(ch4n2o2 * ms, 2),
+                    "kh2po4": round(kh2po4 * ms, 2),
+                    "mgso4": round(mgso4 * ms, 2),
+                    "nacl": round(nacl * ms, 2),
+                    "kcl": round(kcl * ms, 2),
+                    "mnso4": round(mnso4 * ms, 2),
+                    "znso4": round(znso4 * ms, 2),
+                }
+            }
+            return result
+        except Exception as e:
+            return {"error": str(e)}

@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+
+{% block title %}محاسبه‌گر قند{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="text-center">محاسبه‌گر قند</h3>
+                </div>
+                <div class="card-body">
+                    <form method="POST" id="calculator-form">
+                        <div class="mb-3">
+                            <label for="ms" class="form-label">مقدار قند (کیلوگرم)</label>
+                            <input type="number" step="0.1" class="form-control" id="ms" name="ms" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="ef" class="form-label">کارایی تخمیر (درصد)</label>
+                            <input type="number" step="0.1" class="form-control" id="ef" name="ef" value="100">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">روش محاسبه</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="by" id="by_hydromodule" value="by_hydromodule" checked>
+                                <label class="form-check-label" for="by_hydromodule">
+                                    با استفاده از هیدرومدول
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="by" id="by_water_volume" value="by_water_volume">
+                                <label class="form-check-label" for="by_water_volume">
+                                    با استفاده از حجم آب
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="by" id="by_total_volume" value="by_total_volume">
+                                <label class="form-check-label" for="by_total_volume">
+                                    با استفاده از حجم کل
+                                </label>
+                            </div>
+                        </div>
+
+                        <div id="dynamic-input" class="mb-3">
+                            <div id="gm-input">
+                                <label for="gm" class="form-label">هیدرومدول</label>
+                                <input type="number" step="0.1" class="form-control" id="gm" name="gm">
+                            </div>
+                            <div id="v-input" style="display: none;">
+                                <label for="v" class="form-label">حجم آب (لیتر)</label>
+                                <input type="number" step="0.1" class="form-control" id="v" name="v">
+                            </div>
+                            <div id="vb-input" style="display: none;">
+                                <label for="vb" class="form-label">حجم کل (لیتر)</label>
+                                <input type="number" step="0.1" class="form-control" id="vb" name="vb">
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100">محاسبه</button>
+                    </form>
+
+                    {% if result %}
+                    <div class="mt-4">
+                        <h4>نتایج محاسبه:</h4>
+                        {% if result.error %}
+                            <div class="alert alert-danger">{{ result.error }}</div>
+                        {% else %}
+                            <table class="table">
+                                <tr>
+                                    <td>حجم آب (لیتر)</td>
+                                    <td>{{ result.vW }}</td>
+                                </tr>
+                                <tr>
+                                    <td>هیدرومدول</td>
+                                    <td>{{ result.gm }}</td>
+                                </tr>
+                                <tr>
+                                    <td>حجم کل (لیتر)</td>
+                                    <td>{{ result.vWTotal }}</td>
+                                </tr>
+                                <tr>
+                                    <td>حجم الکل مطلق (لیتر)</td>
+                                    <td>{{ result.vAS }}</td>
+                                </tr>
+                                <tr>
+                                    <td>درصد قند (Brix)</td>
+                                    <td>{{ result.sb }}%</td>
+                                </tr>
+                                <tr>
+                                    <td>درصد حجمی الکل</td>
+                                    <td>{{ result.s }}%</td>
+                                </tr>
+                                <tr>
+                                    <td>حجم الکل 40 درجه (لیتر)</td>
+                                    <td>{{ result.v40 }}</td>
+                                </tr>
+                            </table>
+
+                            <h5 class="mt-4">مواد مغذی مورد نیاز:</h5>
+                            <table class="table">
+                                <tr>
+                                    <td>اوره (گرم)</td>
+                                    <td>{{ result.nutrients.carbamide }}</td>
+                                </tr>
+                                <tr>
+                                    <td>فسفات (گرم)</td>
+                                    <td>{{ result.nutrients.kh2po4 }}</td>
+                                </tr>
+                                <tr>
+                                    <td>سولفات منیزیم (گرم)</td>
+                                    <td>{{ result.nutrients.mgso4 }}</td>
+                                </tr>
+                                <tr>
+                                    <td>کلرید سدیم (گرم)</td>
+                                    <td>{{ result.nutrients.nacl }}</td>
+                                </tr>
+                                <tr>
+                                    <td>کلرید پتاسیم (گرم)</td>
+                                    <td>{{ result.nutrients.kcl }}</td>
+                                </tr>
+                                <tr>
+                                    <td>سولفات منگنز (گرم)</td>
+                                    <td>{{ result.nutrients.mnso4 }}</td>
+                                </tr>
+                                <tr>
+                                    <td>سولفات روی (گرم)</td>
+                                    <td>{{ result.nutrients.znso4 }}</td>
+                                </tr>
+                            </table>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('calculator-form');
+    const methodInputs = document.getElementsByName('by');
+    const gmInput = document.getElementById('gm-input');
+    const vInput = document.getElementById('v-input');
+    const vbInput = document.getElementById('vb-input');
+
+    function updateInputVisibility() {
+        const selectedMethod = document.querySelector('input[name="by"]:checked').value;
+        
+        gmInput.style.display = selectedMethod === 'by_hydromodule' ? 'block' : 'none';
+        vInput.style.display = selectedMethod === 'by_water_volume' ? 'block' : 'none';
+        vbInput.style.display = selectedMethod === 'by_total_volume' ? 'block' : 'none';
+        
+        // Clear values when hidden
+        if (selectedMethod !== 'by_hydromodule') document.getElementById('gm').value = '';
+        if (selectedMethod !== 'by_water_volume') document.getElementById('v').value = '';
+        if (selectedMethod !== 'by_total_volume') document.getElementById('vb').value = '';
+    }
+
+    methodInputs.forEach(input => {
+        input.addEventListener('change', updateInputVisibility);
+    });
+
+    updateInputVisibility();
+});
+</script>
+{% endblock %}

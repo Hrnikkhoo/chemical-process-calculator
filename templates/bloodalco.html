@@ -1,0 +1,347 @@
+{% extends "base.html" %}
+{% block title %}محاسبه غلظت الکل خون{% endblock %}
+{% block content %}
+<section class="calc-cont">
+    <div class="container py-4">
+        <!-- Title Section -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="d-flex align-items-center">
+                    <div class="bg-danger bg-opacity-10 p-3 rounded-circle me-3">
+                        <i class="fas fa-wine-glass text-danger fs-3"></i>
+                    </div>
+                    <div>
+                        <h1 class="h3 mb-1">محاسبه غلظت الکل خون</h1>
+                        <p class="text-secondary mb-0">محاسبات میزان الکل در خون براساس مصرف نوشیدنی</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <!-- Calculator Form -->
+            <div class="col-12 col-lg-6">
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-danger bg-opacity-10 py-3">
+                        <h5 class="card-title mb-0 text-danger">
+                            <i class="fas fa-calculator me-2"></i>
+                            فرم محاسبه
+                        </h5>
+                    </div>
+                    <div class="card-body p-4" id="calc">
+                        <!-- Drink Parameters -->
+                        <div id="div_undefined" class="themed-input-group mb-4">
+                            <div class="row g-3">
+                                <div class="col-6">
+                                    <label for="s" class="form-label">قدرت نوشیدنی <span class="text-muted">(%)</span></label>
+                                    <div class="input-group">
+                                        <input value="40" data-p="s" id="s" type="text" class="form-control" inputmode="decimal">
+                                        <button type="button" class="btn btn-outline-secondary input-minus">
+                                            <i class="fas fa-minus"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-outline-secondary input-plus">
+                                            <i class="fas fa-plus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <label for="v" class="form-label">حجم نوشیدنی <span class="text-muted">(ml)</span></label>
+                                    <div class="input-group">
+                                        <input value="100" data-p="v" id="v" type="text" class="form-control" inputmode="decimal">
+                                        <button type="button" class="btn btn-outline-secondary input-minus">
+                                            <i class="fas fa-minus"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-outline-secondary input-plus">
+                                            <i class="fas fa-plus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-3">
+                                <button class="cart-add btn btn-outline-danger w-100">
+                                    <i class="fas fa-plus-circle me-2"></i>
+                                    اضافه کردن نوشیدنی
+                                </button>
+                            </div>
+                            <!-- Cart Items -->
+                            <div class="cart mt-3">
+                                <div class="row fs-12 text-brand"></div>
+                            </div>
+                        </div>
+
+                        <!-- Weight Input -->
+                        <div class="themed-input-group mb-4">
+                            <label for="w" class="form-label">وزن <span class="text-muted">(kg)</span></label>
+                            <div class="input-group">
+                                <input value="70" id="w" type="text" class="form-control" inputmode="decimal">
+                                <button type="button" class="btn btn-outline-secondary input-minus">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary input-plus">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Person Parameters -->
+                        <div id="div_gender" class="themed-input-group mb-4">
+                            <label for="gender" class="form-label">جنسیت</label>
+                            <select data-p="gender" id="gender" class="form-select calc-allow-ls">
+                                <option value="0.7">مرد</option>
+                                <option value="0.6">زن</option>
+                            </select>
+                        </div>
+
+                        <div id="div_fill" class="themed-input-group mb-4">
+                            <label for="fill" class="form-label">وضعیت معده</label>
+                            <select data-p="fill" id="fill" class="form-select calc-allow-ls">
+                                <option value="1">خالی</option>
+                                <option value="0.937">خوب تغذیه شده</option>
+                                <option value="0.873">کامل</option>
+                            </select>
+                        </div>
+
+                        <div id="div_speed" class="themed-input-group mb-4">
+                            <label for="speed" class="form-label">مدت زمان مصرف</label>
+                            <select data-p="speed" id="speed" class="form-select calc-allow-ls">
+                                <option value="0">مستقیماً</option>
+                                <option value="1">در عرض ۱ ساعت</option>
+                                <option value="2">در عرض ۲ ساعت</option>
+                                <option value="3">در عرض ۳ ساعت</option>
+                                <option value="4">در ۴ ساعت</option>
+                                <option value="5">در ۵ ساعت</option>
+                                <option value="6">در عرض ۶ ساعت</option>
+                                <option value="7">در ۷ ساعت</option>
+                                <option value="8">در ۸ ساعت</option>
+                                <option value="9">در عرض ۹ ساعت</option>
+                                <option value="10">در عرض ۱۰ ساعت</option>
+                                <option value="11">در عرض ۱۱ ساعت</option>
+                                <option value="12">در ۱۲ ساعت</option>
+                            </select>
+                        </div>
+
+                        <div id="div_timerAfter" class="themed-input-group mb-4">
+                            <label for="timerAfter" class="form-label">زمان سپری شده</label>
+                            <select data-p="timerAfter" id="timerAfter" class="form-select calc-allow-ls">
+                                <option value="0">همین الان</option>
+                                <option value="1">۱ ساعت</option>
+                                <option value="2">۲ ساعت</option>
+                                <option value="3">۳ ساعت</option>
+                                <option value="4">۴ ساعت</option>
+                                <option value="5">۵ ساعت</option>
+                                <option value="6">۶ ساعت</option>
+                                <option value="7">۷ ساعت</option>
+                                <option value="8">۸ ساعت</option>
+                                <option value="9">۹ ساعت</option>
+                                <option value="10">۱۰ ساعت</option>
+                                <option value="11">ساعت ۱۱</option>
+                                <option value="12">۱۲ ساعت</option>
+                                <option value="13">۱۳ ساعت</option>
+                                <option value="14">۱۴ ساعت</option>
+                                <option value="15">۱۵ ساعت</option>
+                                <option value="16">۱۶ ساعت</option>
+                                <option value="17">۱۷ ساعت</option>
+                                <option value="18">۱۸ ساعت</option>
+                                <option value="19">۱۹ ساعت</option>
+                                <option value="20">۲۰ ساعت</option>
+                                <option value="21">۲۱ ساعت</option>
+                                <option value="22">۲۲ ساعت</option>
+                                <option value="23">۲۳ ساعت</option>
+                                <option value="24">۲۴ ساعت</option>
+                            </select>
+                        </div>
+
+                        <!-- Calculate Button -->
+                        <button type="button" class="btn btn-danger btn-lg w-100" id="calc_btn">
+                            <i class="fas fa-calculator me-2"></i>
+                            محاسبه
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Section -->
+            <div class="col-12 col-lg-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-header bg-danger bg-opacity-10 py-3">
+                        <h5 class="card-title mb-0 text-danger">
+                            <i class="fas fa-chart-line me-2"></i>
+                            نتایج محاسبه
+                        </h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <div id="rec" class="calc-recommendation"></div>
+                        <div id="result"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle increment/decrement buttons
+    document.querySelectorAll('.input-minus, .input-plus').forEach(button => {
+        button.addEventListener('click', function() {
+            const input = this.parentElement.querySelector('input');
+            const step = input.id === 'w' ? 1 : 0.1;
+            const value = parseFloat(input.value) || 0;
+            
+            if (this.classList.contains('input-plus')) {
+                input.value = (value + step).toFixed(1);
+            } else {
+                input.value = Math.max(0, (value - step)).toFixed(1);
+            }
+        });
+    });
+
+    // Handle cart functionality
+    const cart = document.querySelector('.cart .row');
+    document.querySelector('.cart-add').addEventListener('click', function() {
+        const strength = parseFloat(document.getElementById('s').value);
+        const volume = parseFloat(document.getElementById('v').value);
+
+        if (!strength || !volume || strength <= 0 || volume <= 0) {
+            alert('لطفا مقادیر معتبر برای قدرت و حجم نوشیدنی وارد کنید');
+            return;
+        }
+
+        const cartItem = document.createElement('div');
+        cartItem.className = 'col-12 cart-row mb-2';
+        cartItem.setAttribute('data-row_s', strength);
+        cartItem.setAttribute('data-row_v', volume);
+        cartItem.innerHTML = `
+            <div class="row align-items-center bg-light rounded p-2">
+                <div class="col">
+                    <button class="cart-row-delete btn btn-sm btn-outline-danger">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+                <div class="col-10">
+                    قدرت نوشیدنی - <b>${strength}</b>٪ | حجم نوشیدنی - <b>${volume}</b> میلی لیتر
+                </div>
+            </div>
+        `;
+
+        cart.appendChild(cartItem);
+
+        // Add delete functionality
+        cartItem.querySelector('.cart-row-delete').addEventListener('click', function() {
+            cartItem.remove();
+        });
+    });    // Handle calculate button
+    const calcBtn = document.getElementById('calc_btn');
+    calcBtn.addEventListener('click', async function() {
+        if (calcBtn.disabled) return; // Prevent multiple clicks
+
+        const cartItems = Array.from(document.querySelectorAll('.cart-row')).map(row => ({
+            s: parseFloat(row.getAttribute('data-row_s')),
+            v: parseFloat(row.getAttribute('data-row_v'))
+        }));
+
+        if (cartItems.length === 0) {
+            alert('لطفا حداقل یک نوشیدنی اضافه کنید');
+            return;
+        }
+        const weight = parseFloat(document.getElementById('w').value);
+        if (!weight || weight <= 0) {
+            alert('لطفا وزن معتبری وارد کنید');
+            return;
+        }
+
+        const data = {
+            w: weight,
+            gender: parseFloat(document.getElementById('gender').value),
+            fill: parseFloat(document.getElementById('fill').value),
+            speed: parseInt(document.getElementById('speed').value) || 0,
+            timerAfter: parseInt(document.getElementById('timerAfter').value) || 0,
+            cartAdded: cartItems
+        };        try {
+            const btnText = calcBtn.innerHTML;
+            calcBtn.disabled = true;
+            calcBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>در حال محاسبه...';
+
+            const response = await fetch('/calculate_blood_alcohol', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            });
+
+            const result = await response.json();
+
+            if (result.error) {
+                throw new Error(result.error);
+            }
+
+            // Update results
+            const rec = document.getElementById('rec');
+            const resultDiv = document.getElementById('result');
+
+            rec.innerHTML = getRecommendationText(result.recommendation);
+            resultDiv.innerHTML = `
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <tbody>
+                            <tr>
+                                <td class="fw-bold">حداکثر درصد الکل خون:</td>
+                                <td>${result.maxBloodAlcoPercentage}‰</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold">مقدار الکل در هوای بازدم:</td>
+                                <td>${result.airAlcoPercentage} mg/L</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold">زمان تخمینی برای حذف کامل الکل:</td>
+                                <td>${formatTime(result.alcoOutTime)}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        } catch (error) {
+            document.getElementById('result').innerHTML = `
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-circle me-2"></i>
+                    ${error.message || 'خطا در محاسبه. لطفا دوباره تلاش کنید.'}
+                </div>
+            `;        } finally {
+            // Ensure button returns to normal state even if there's an error
+            calcBtn.disabled = false;
+            calcBtn.innerHTML = '<i class="fas fa-calculator me-2"></i>محاسبه';
+        }
+    });
+
+    // Helper functions
+    function getRecommendationText(rec) {
+        const recommendations = {
+            'calc.alcoOffImpact': 'تأثیر مشروب کاملاً از بین رفته است.',
+            'calc.alcoMinImpact': 'تأثیر خفیف الکل - رانندگی ممنوع.',
+            'calc.alcoLightImpact': 'تأثیر متوسط الکل - رانندگی اکیداً ممنوع.',
+            'calc.alcoMiddleImpact': 'تأثیر نسبتاً شدید الکل.',
+            'calc.alcoStrongImpact': 'تأثیر شدید الکل - خطر مسمومیت.',
+            'calc.alcoHardImpact': 'تأثیر بسیار شدید الکل - خطر جدی برای سلامتی.'
+        };
+
+        return `
+            <div class="alert alert-${rec === 'calc.alcoOffImpact' ? 'success' : 'warning'}">
+                <i class="fas fa-${rec === 'calc.alcoOffImpact' ? 'check' : 'exclamation'}-circle me-2"></i>
+                ${recommendations[rec] || 'خطر نامشخص'}
+            </div>
+        `;
+    }
+
+    function formatTime(time) {
+        if (!time || (!time.hours && !time.minutes)) return '0 ساعت';
+        let result = [];
+        if (time.hours) result.push(`${time.hours} ساعت`);
+        if (time.minutes) result.push(`${time.minutes} دقیقه`);
+        return result.join(' و ');
+    }
+});
+</script>
+{% endblock %}

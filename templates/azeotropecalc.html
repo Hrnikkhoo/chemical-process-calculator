@@ -1,0 +1,202 @@
+{% extends "base.html" %}
+{% block title %}محاسبه دمای آزئوتروپ{% endblock %}
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <!-- Page Header -->
+            <div class="page-header mb-4">
+                <h1 class="display-5 fw-bold">
+                    <i class="fas fa-temperature-high text-primary me-2"></i>
+                    محاسبه دمای آزئوتروپ در منطقه شما
+                </h1>
+                <p class="lead text-muted">
+                    با استفاده از این ابزار می‌توانید دمای آزئوتروپ را بر اساس موقعیت جغرافیایی و فشار اتمسفری محل خود محاسبه کنید.
+                </p>
+            </div>
+
+            <!-- Calculator Card -->
+            <div class="card shadow-sm border-0 mb-4 rounded-4">
+                <div class="card-header bg-primary text-white py-3 rounded-top-4">
+                    <h5 class="mb-0">
+                        <i class="fas fa-map-marker-alt me-2"></i>
+                        انتخاب موقعیت
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <!-- Map Container -->
+                    <div id="map" class="mb-4 rounded-4" style="height: 400px;"></div>
+                    
+                    <div class="selected-location mb-4" style="display: none;">
+                        <div class="alert alert-info rounded-4">
+                            <i class="fas fa-info-circle me-2"></i>
+                            <span>موقعیت انتخاب شده: </span>
+                            <span id="selected-location-text"></span>
+                        </div>
+                    </div>
+
+                    <!-- Calculate Button -->
+                    <div class="text-center">
+                        <button id="calculateBtn" class="btn btn-primary btn-lg px-5 rounded-4" disabled>
+                            <i class="fas fa-calculator me-2"></i>
+                            محاسبه دمای آزئوتروپ
+                        </button>
+                    </div>
+
+                    <!-- Results Section -->
+                    <div id="results" class="mt-4" style="display: none;">
+                        <!-- Location Info -->
+                        <div class="mb-4 text-center">
+                            <h4 class="text-primary" id="city-name">-</h4>
+                        </div>
+                        
+                        <div class="row g-3">
+                            <!-- Atmospheric Data -->
+                            <div class="col-md-6">
+                                <div class="card h-100 rounded-4 bg-light">
+                                    <div class="card-body">
+                                        <h5 class="card-title mb-4">
+                                            <i class="fas fa-cloud text-primary me-2"></i>
+                                            شرایط جوی
+                                        </h5>
+                                        <div class="text-center">
+                                            <div class="mb-3">
+                                                <small class="text-muted">فشار اتمسفری</small>
+                                                <h3 id="pressure-value">-</h3>
+                                                <small>میلیمتر جیوه</small>
+                                            </div>
+                                            <div class="mb-3">
+                                                <small class="text-muted">دمای هوا</small>
+                                                <h3 id="current-temp">-</h3>
+                                                <small>درجه سانتی‌گراد</small>
+                                            </div>
+                                            <div class="mb-3">
+                                                <small class="text-muted">رطوبت نسبی</small>
+                                                <h3 id="humidity-value">-</h3>
+                                                <small>درصد</small>
+                                            </div>
+                                            <div>
+                                                <small class="text-muted">سرعت باد</small>
+                                                <h3 id="wind-speed">-</h3>
+                                                <small>کیلومتر بر ساعت</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Azeotrope Result -->
+                            <div class="col-md-6">
+                                <div class="card h-100 rounded-4 bg-primary text-white">
+                                    <div class="card-body">
+                                        <h5 class="card-title mb-4">
+                                            <i class="fas fa-thermometer-half me-2"></i>
+                                            دمای آزئوتروپ
+                                        </h5>
+                                        <div class="text-center">
+                                            <div class="display-1 mb-3" id="temperature-value">-</div>
+                                            <p class="mb-0">درجه سانتی‌گراد</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize map
+    const map = L.map('map').setView([32.4279, 53.6880], 5);  // مرکز ایران
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    let marker = null;
+    let selectedLat = null;
+    let selectedLon = null;
+
+    // Handle map click
+    map.on('click', function(e) {
+        if (marker) {
+            map.removeLayer(marker);
+        }
+        marker = L.marker(e.latlng).addTo(map);
+        selectedLat = e.latlng.lat;
+        selectedLon = e.latlng.lng;
+        
+        document.querySelector('.selected-location').style.display = 'block';
+        document.getElementById('selected-location-text').textContent = 
+            `عرض جغرافیایی: ${selectedLat.toFixed(4)}, طول جغرافیایی: ${selectedLon.toFixed(4)}`;
+        document.getElementById('calculateBtn').disabled = false;
+    });
+
+    // Handle calculate button click
+    document.getElementById('calculateBtn').addEventListener('click', function() {
+        const btn = this;
+        const originalText = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>در حال محاسبه...';
+
+        // Send coordinates to backend
+        fetch('/calculate_azeotrope', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                lat: selectedLat,
+                lon: selectedLon
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                throw new Error(data.error);
+            }
+            
+            // Update results
+            document.getElementById('city-name').textContent = data.city_name;
+            document.getElementById('pressure-value').textContent = data.pressure;
+            document.getElementById('current-temp').textContent = data.current_temp;
+            document.getElementById('humidity-value').textContent = data.humidity;
+            document.getElementById('wind-speed').textContent = data.wind_speed;
+            document.getElementById('temperature-value').textContent = data.temperature;
+            
+            document.getElementById('results').style.display = 'block';
+        })
+        .catch(error => {
+            alert('خطا در محاسبه: ' + error.message);
+        })
+        .finally(() => {
+            btn.disabled = false;
+            btn.innerHTML = originalText;
+        });
+    });
+});
+</script>
+
+<style>
+.leaflet-container {
+    border-radius: 1rem;
+}
+
+.card {
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+</style>
+{% endblock %}
