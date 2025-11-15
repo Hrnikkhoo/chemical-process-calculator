@@ -1,4 +1,4 @@
-# iFerment 1.0.0 - Fermentation and Distillation Calculator
+# FDC 1.0.0 - Fermentation and Distillation Calculator
 
 A comprehensive web application for precise calculations of alcohol fermentation and distillation processes.
 
