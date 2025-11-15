@@ -14,40 +14,61 @@ kcl = 10
 mnso4 = 0.6
 znso4 = 0.6
 
+def safe_float(value, default=0):
+    """تبدیل امن مقدار به float - اگر خالی یا نامعتبر باشد مقدار پیش‌فرض برمی‌گرداند"""
+    if value is None:
+        return default
+    if isinstance(value, (int, float)):
+        return float(value)
+    if isinstance(value, str):
+        if not value.strip():
+            return default
+        try:
+            return float(value)
+        except (ValueError, TypeError):
+            return default
+    try:
+        return float(value)
+    except (ValueError, TypeError):
+        return default
+
 class SugerCalc:
     @staticmethod
     def calculate():
         try:
-            method = request.form["by"]
-            ms = float(request.form.get("ms", 0))
-            ef = float(request.form.get("ef", 100))
+            method = request.form.get("by", "")
+            if not method:
+                return {"error": "روش محاسبه انتخاب نشده است"}
+            
+            ms = safe_float(request.form.get("ms"), 0)
+            ef = safe_float(request.form.get("ef"), 100)
 
             if method == "by_hydromodule":
-                gm = float(request.form.get("gm", 0))
+                gm = safe_float(request.form.get("gm"), 0)
                 vW = ms * gm
                 vWTotal = vW + ms * sv
                 vAS = ef / 100 * ms * sas
-                sb = (ms / (ms + vW)) * 100
-                s = vAS * 100 / vWTotal
+                sb = (ms / (ms + vW)) * 100 if (ms + vW) > 0 else 0
+                s = vAS * 100 / vWTotal if vWTotal > 0 else 0
                 v40 = ef40 / 100 * vWTotal * s / sd
 
             elif method == "by_water_volume":
-                v = float(request.form.get("v", 0))
-                gm = v / ms
+                v = safe_float(request.form.get("v"), 0)
+                gm = v / ms if ms > 0 else 0
                 vWTotal = v + ms * sv
                 vAS = ef / 100 * ms * sas
-                sb = (ms / (ms + v)) * 100
-                s = vAS * 100 / vWTotal
+                sb = (ms / (ms + v)) * 100 if (ms + v) > 0 else 0
+                s = vAS * 100 / vWTotal if vWTotal > 0 else 0
                 v40 = ef40 / 100 * vWTotal * s / sd
                 vW = v
 
             elif method == "by_total_volume":
-                vb = float(request.form.get("vb", 0))
+                vb = safe_float(request.form.get("vb"), 0)
                 vW = vb - ms * sv
-                gm = vW / ms
+                gm = vW / ms if ms > 0 else 0
                 vAS = ef / 100 * ms * sas
-                sb = (ms / (ms + vW)) * 100
-                s = vAS * 100 / vb
+                sb = (ms / (ms + vW)) * 100 if (ms + vW) > 0 else 0
+                s = vAS * 100 / vb if vb > 0 else 0
                 v40 = ef40 / 100 * vb * s / sd
                 vWTotal = vb
 

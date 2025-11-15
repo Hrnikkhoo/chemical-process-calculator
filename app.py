@@ -128,6 +128,17 @@ def bloodalco():
         result = calculate_blood_alcohol(request.form)
     return render_template('bloodalco.html', result=result)
 
+@app.route('/calculate_blood_alcohol', methods=['POST'])
+def calculate_blood_alcohol_endpoint():
+    try:
+        data = request.json
+        if not data:
+            return jsonify({"error": "No data provided"}), 400
+        result = calculate_blood_alcohol(data)
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 #=======================================SpiritrunCalculator=====================
 @app.route('/spiritrun', methods=['GET', 'POST'])
 def spiritrun():
