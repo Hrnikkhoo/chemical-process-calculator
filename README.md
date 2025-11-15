@@ -1,91 +1,91 @@
-# iFerment 1.0.0 - حسابگر تخمیر و تقطیر
+# iFerment 1.0.0 - Fermentation and Distillation Calculator
 
-یک برنامه وب جامع برای محاسبات دقیق فرآیندهای تخمیر و تقطیر الکل.
+A comprehensive web application for precise calculations of alcohol fermentation and distillation processes.
 
-## 📋 ویژگی‌ها
+## 📋 Features
 
-### محاسبات تخمیر
-- **محاسبه قند تخمیر**: محاسبه میزان قند، حجم آب و مواد مغذی مورد نیاز
-- **تخمیر غلات**: محاسبات تخمیر برای انواع غلات
-- **تخمیر میوه**: محاسبات تخمیر برای میوه‌جات
-- **محاسبات تخمیر عمومی**: محاسبات کلی فرآیند تخمیر
+### Fermentation Calculations
+- **Sugar Fermentation Calculator**: Calculate sugar content, water volume, and required nutrients
+- **Grain Fermentation**: Fermentation calculations for various grains
+- **Fruit Fermentation**: Fermentation calculations for fruits
+- **General Fermentation Calculations**: Overall fermentation process calculations
 
-### محاسبات تقطیر
-- **پکینگ اسپیرال**: محاسبه پارامترهای پکینگ اسپیرال
-- **ریفلاکس**: محاسبات نسبت ریفلاکس و پارامترهای مرتبط
-- **آزئوتروپ**: محاسبه نقطه آزئوتروپ
-- **اسپیریت ران**: محاسبات دقیق برای اسپیریت ران
-- **زمان گرم شدن مخزن**: محاسبه زمان مورد نیاز برای گرم کردن مخزن تقطیر
-- **نقطه جوش**: محاسبه نقطه جوش بر اساس فشار و دما
-- **گرمای ستون**: محاسبات گرمایی ستون تقطیر
-- **مایع باقیمانده**: محاسبه حجم مایع باقیمانده
+### Distillation Calculations
+- **Spiral Packing**: Calculate spiral packing parameters
+- **Reflux**: Reflux ratio calculations and related parameters
+- **Azeotrope**: Calculate azeotropic point
+- **Spirit Run**: Precise calculations for spirit runs
+- **Tank Heating Time**: Calculate time required to heat the distillation tank
+- **Boiling Point**: Calculate boiling point based on pressure and temperature
+- **Column Heat**: Thermal calculations for distillation columns
+- **Remaining Liquid**: Calculate remaining liquid volume
 
-### سایر محاسبات
-- **محاسبه الکل خون**: محاسبه غلظت الکل در خون بر اساس مصرف نوشیدنی
-- **قدرت المنت**: محاسبات قدرت المنت گرمایی
-- **رفرکتومتر**: محاسبات رفرکتومتر
+### Other Calculations
+- **Blood Alcohol Calculator**: Calculate blood alcohol concentration based on beverage consumption
+- **Element Power**: Electrical heating element power calculations
+- **Refractometer**: Refractometer calculations
 
-## 🚀 نصب و راه‌اندازی
+## 🚀 Installation and Setup
 
-### پیش‌نیازها
-- Python 3.8 یا بالاتر
-- pip (مدیر بسته Python)
+### Prerequisites
+- Python 3.8 or higher
+- pip (Python package manager)
 
-### مراحل نصب
+### Installation Steps
 
-1. کلون کردن یا دانلود پروژه:
+1. Clone or download the project:
 ```bash
 git clone https://github.com/Hrnikkhoo/chemical-process-calculator.git
 cd iferment1.0.0
 ```
 
-2. ایجاد محیط مجازی (اختیاری اما توصیه می‌شود):
+2. Create a virtual environment (optional but recommended):
 ```bash
 python -m venv venv
 
-# در Windows:
+# On Windows:
 venv\Scripts\activate
 
-# در Linux/Mac:
+# On Linux/Mac:
 source venv/bin/activate
 ```
 
-3. نصب وابستگی‌ها:
+3. Install dependencies:
 ```bash
 pip install -r requirements.txt
 ```
 
-4. اجرای برنامه:
+4. Run the application:
 ```bash
 python app.py
 ```
 
-5. باز کردن مرورگر و رفتن به:
+5. Open your browser and navigate to:
 ```
 http://localhost:5000
 ```
 
-## 📁 ساختار پروژه
+## 📁 Project Structure
 
 ```
 iferment1.0.0/
-├── app.py                 # فایل اصلی Flask
-├── requirements.txt       # وابستگی‌های پروژه
-├── README.md             # این فایل
-├── .gitignore            # فایل‌های نادیده گرفته شده توسط Git
+├── app.py                 # Main Flask file
+├── requirements.txt       # Project dependencies
+├── README.md             # This file
+├── .gitignore            # Files ignored by Git
 │
-├── templates/            # قالب‌های HTML
+├── templates/            # HTML templates
 │   ├── base.html
 │   ├── index.html
 │   ├── about.html
-│   └── [سایر قالب‌ها]
+│   └── [Other templates]
 │
-├── static/               # فایل‌های استاتیک
+├── static/               # Static files
 │   ├── css/
 │   ├── js/
 │   └── img/
 │
-└── [فایل‌های محاسباتی]  # فایل‌های Python برای محاسبات
+└── [Calculation files]   # Python files for calculations
     ├── sugercalc.py
     ├── graincalc.py
     ├── fruitcalc.py
@@ -93,60 +93,60 @@ iferment1.0.0/
     └── ...
 ```
 
-## 🛠️ تکنولوژی‌های استفاده شده
+## 🛠️ Technologies Used
 
 - **Backend**: Flask (Python)
 - **Frontend**: HTML5, CSS3, JavaScript, Bootstrap
 - **Icons**: Font Awesome
 
-## 📝 استفاده
+## 📝 Usage
 
-1. پس از اجرای برنامه، صفحه اصلی را باز کنید
-2. ماشین حساب مورد نظر خود را انتخاب کنید
-3. مقادیر را وارد کنید
-4. روی دکمه "محاسبه" کلیک کنید
-5. نتایج را مشاهده کنید
+1. After running the application, open the main page
+2. Select your desired calculator
+3. Enter the values
+4. Click the "Calculate" button
+5. View the results
 
-## 🔧 توسعه
+## 🔧 Development
 
-برای توسعه و بهبود پروژه:
+To develop and improve the project:
 
-1. Fork کردن پروژه
-2. ایجاد یک branch جدید (`git checkout -b feature/AmazingFeature`)
-3. Commit کردن تغییرات (`git commit -m 'Add some AmazingFeature'`)
-4. Push کردن به branch (`git push origin feature/AmazingFeature`)
-5. باز کردن Pull Request
+1. Fork the project
+2. Create a new branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-## ⚠️ نکات مهم
+## ⚠️ Important Notes
 
-- این برنامه برای اهداف آموزشی و تحقیقاتی طراحی شده است
-- در استفاده از محاسبات الکل خون، همیشه احتیاط کنید و رانندگی در حالت مستی ممنوع است
-- نتایج محاسبات تقریبی هستند و ممکن است با شرایط واقعی متفاوت باشند
+- This application is designed for educational and research purposes
+- When using blood alcohol calculations, always exercise caution and never drive under the influence
+- Calculation results are approximate and may differ from actual conditions
 
-## 📄 مجوز
+## 📄 License
 
-این پروژه تحت مجوز MIT منتشر شده است.
+This project is released under the MIT License.
 
-## 👥 مشارکت
+## 👥 Contributing
 
-مشارکت‌ها، پیشنهادات و گزارش باگ‌ها همیشه خوش‌آمد هستند!
+Contributions, suggestions, and bug reports are always welcome!
 
-## 📧 تماس
+## 📧 Contact
 
-برای سوالات و پشتیبانی، لطفاً یک Issue در GitHub ایجاد کنید.
-
----
-
-**نسخه**: 1.0.0  
-**آخرین بروزرسانی**: 2025
+For questions and support, please create an Issue on GitHub.
 
 ---
 
-## English Description
+**Version**: 1.0.0  
+**Last Update**: 2025
+
+---
+
+## Detailed Description
 
 This project, "chemical-process-calculator", is a Flask-based web application designed to provide a comprehensive suite of calculators for various parameters encountered in chemical processes, with a particular emphasis on fermentation and distillation. The application integrates a range of specialized computational tools to assist users in optimizing and understanding key aspects of these processes.
 
-Key functionalities include:
+### Key Functionalities:
 
 *   **Specific Gravity and Alcohol Content Analysis:** The SPN Calculator facilitates the determination of specific gravity and potential alcohol yield, crucial for fermentation monitoring.
 *   **Thermal Dynamics:** The Heat Time Calculator and Column Heat Calculator enable precise calculation of heating durations and thermal energy requirements for process optimization and energy efficiency.
@@ -156,5 +156,6 @@ Key functionalities include:
 *   **Refractometry and Concentration:** The Refractometer Calculator aids in interpreting refractometric data, essential for accurate concentration measurements in various solutions.
 *   **Spirit Production Optimization:** The Spirit Run Calculator is tailored for optimizing spirit distillation, considering factors such as cuts and yield.
 *   **Ancillary Chemical Engineering Tools:** Additional calculators include the Element Power Calculator for electrical heating elements, Remaining Liquid Calculator for volume assessments, and Boiling Point Calculator for phase equilibrium analysis.
+*   **Blood Alcohol Content:** The Blood Alcohol Calculator helps estimate blood alcohol concentration based on beverage consumption, gender, weight, and time factors.
 
 This platform serves as an invaluable resource for chemical engineers, distillers, brewers, and researchers, offering precise computational support for process design, control, and troubleshooting in chemical and biochemical industries.
