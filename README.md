@@ -36,7 +36,7 @@ A comprehensive web application for precise calculations of alcohol fermentation
 1. Clone or download the project:
 ```bash
 git clone https://github.com/Hrnikkhoo/chemical-process-calculator.git
-cd iferment1.0.0
+cd FDC1.0.0
 ```
 
 2. Create a virtual environment (optional but recommended):
@@ -68,7 +68,7 @@ http://localhost:5000
 ## 📁 Project Structure
 
 ```
-iferment1.0.0/
+FDC.0.0/
 ├── app.py                 # Main Flask file
 ├── requirements.txt       # Project dependencies
 ├── README.md             # This file
