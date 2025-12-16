@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}ماشین حساب رقیق سازی{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center">ماشین حساب رقیق سازی</h2>
+    <form action="/dilution" method="post" class="mt-4">
+        <div class="form-group">
+            <label for="initial_volume">حجم اولیه:</label>
+            <input type="number" step="any" class="form-control" id="initial_volume" name="initial_volume" required>
+        </div>
+        <div class="form-group">
+            <label for="initial_concentration">غلظت اولیه (%):</label>
+            <input type="number" step="any" class="form-control" id="initial_concentration" name="initial_concentration" required>
+        </div>
+        <div class="form-group">
+            <label for="final_concentration">غلظت نهایی (%):</label>
+            <input type="number" step="any" class="form-control" id="final_concentration" name="final_concentration" required>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">محاسبه</button>
+    </form>
+
+    {% if result is not none %}
+    <div class="alert alert-success mt-4">
+        <p><strong>نتیجه:</strong></p>
+        {% if 'Error' in result %}
+            <p>{{ result }}</p>
+        {% else %}
+            <p>مقدار آب مورد نیاز برای افزودن: <strong>{{ "%.2f"|format(result) }}</strong></p>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

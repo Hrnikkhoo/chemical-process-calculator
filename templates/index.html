@@ -235,7 +235,29 @@
       <h2 class="mb-0">محاسبات تقطیر</h2>
     </div>
 
-    <div class="row g-4">      <!-- Reflux Calculator 1 -->
+    <div class="row g-4">
+      <!-- Dilution Calculator -->
+      <div class="col-md-4 col-lg-2-4 calculator-card" data-name="رقیق سازی">
+        <div class="card h-100 shadow-sm">
+          <div class="card-body text-center">
+            <div class="icon-container mb-2" style="background-color: var(--info-light);">
+              <i class="fas fa-blender display-6 text-info"></i>
+            </div>
+            <h6 class="card-title text-info">رقیق سازی</h6>
+            <div class="card-tags mb-2">
+              <span class="badge bg-info-subtle text-info">Dilution</span>
+            </div>
+            <a
+              href="{{ url_for('dilution') }}"
+              class="btn btn-info btn-sm text-white stretched-link"
+            >
+              <i class="fas fa-calculator ms-1"></i>
+              محاسبه
+            </a>
+          </div>
+        </div>
+      </div>
+      <!-- Reflux Calculator 1 -->
       <div class="col-md-4 col-lg-2-4 calculator-card calculator-distillation" data-name="رفلاکس">
         <div class="card h-100 shadow-sm">          <div class="card-body text-center">
             <div class="icon-container" style="background-color: var(--warning-light);">
