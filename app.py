@@ -15,6 +15,7 @@ from bloodalco import calculate_blood_alcohol
 from remainingLiquid import RemainingLiquidCalc
 from boilingPoint import BoilingPointCalc
 from ColumnHeat import ColumnHeatCalc
+from dilutioncalc import calculate_dilution
 
 
 app = Flask(__name__, static_folder='static', static_url_path='/static')
@@ -270,6 +271,23 @@ def columnheat():
         }
         return render_template('ColumnHeat.html', result=result, form_data=form_data)
     return render_template('ColumnHeat.html', form_data=form_data)
+
+#=======================================DilutionCalculator=====================
+@app.route('/dilution', methods=['GET', 'POST'])
+def dilution():
+    result = None
+    if request.method == 'POST':
+        try:
+            initial_volume = float(request.form['initial_volume'])
+            initial_concentration = float(request.form['initial_concentration'])
+            final_concentration = float(request.form['final_concentration'])
+            result = calculate_dilution(initial_volume, initial_concentration, final_concentration)
+        except ValueError:
+            result = "Error: Please enter valid numbers."
+        except Exception as e:
+            result = f"Error: {e}"
+
+    return render_template('dilution.html', result=result)
 
 if __name__ == '__main__':
     app.run(debug=True)
